@@ -1,31 +1,24 @@
 import * as React from "react";
-import {Image, StyleSheet, Text, View} from "react-native";
+import {Image, StyleSheet, Text, View, Button, TouchableOpacity} from "react-native";
+import InsetShadow from 'react-native-inset-shadow';
 
-const LoginPage = () => {
+import SignUpPage from './signUpScreen';
 
+const LoginPage = ({navigation, onLogin}) => {
+
+	const handleLoginPress = () => {
+		// Logic for login, e.g., Firebase authentication
+		onLogin(); // Call the onLogin callback passed from App
+		navigation.navigate('Home');
+	  };
+	const handleSignUpPress = () => {
+		navigation.navigate('SignUp');
+	}
   	return (
     		<View style={styles.loginPage}>
-      			<Image style={styles.image2Icon} resizeMode="cover" source="image 2.png" />
+      			<Image style={styles.image2Icon} resizeMode="cover" source={require("../assets/image_2.png")} />
       			<Text style={styles.cafConnect}>CAFÉ CONNECT</Text>
-      			<Image style={styles.image1Icon} resizeMode="cover" source="image 1.png" />
-      			<View style={[styles.fab, styles.fabShadowBox]}>
-        				<View style={styles.stateLayer}>
-          					<Image style={styles.iconXLetter} resizeMode="cover" source={`🦆 icon "x letter".png`} />
-        				</View>
-      			</View>
-      			<View style={[styles.fab1, styles.fabShadowBox]}>
-        				<View style={styles.stateLayer}>
-          					<Image style={styles.iconXLetter} resizeMode="cover" source={`🦆 icon "facebook".png`} />
-        				</View>
-      			</View>
-      			<View style={[styles.fab2, styles.fabShadowBox]}>
-        				<View style={styles.stateLayer}>
-          					<Image style={styles.iconGoogle} resizeMode="cover" source={`🦆 icon "google".png`} />
-        				</View>
-      			</View>
-      			<View style={styles.sso}>
-        				<Text style={[styles.singleSignOn, styles.labelTextTypo]}>Single Sign-On</Text>
-      			</View>
+      			<Image style={styles.image1Icon} resizeMode="cover" source={require("../assets/image_1.png")} />
       			<View style={[styles.textField, styles.textShadowBox]}>
         				<View style={[styles.textField1, styles.textField1Position]}>
           					<View style={[styles.stateLayer3, styles.textField1Position]}>
@@ -39,7 +32,7 @@ const LoginPage = () => {
         				<View style={styles.activeIndicator} />
       			</View>
       			<View style={[styles.textField2, styles.textShadowBox]}>
-        				<View style={[styles.textField1, styles.textField1Position]}>
+        				<View style={[styles.textField1]}>
           					<View style={[styles.stateLayer3, styles.textField1Position]}>
             						<View style={[styles.content, styles.contentFlexBox]}>
               							<View style={styles.inputTextContainer}>
@@ -50,39 +43,63 @@ const LoginPage = () => {
         				</View>
         				<View style={styles.activeIndicator} />
       			</View>
-      			<View style={[styles.button, styles.buttonLayout]}>
+				
+				<TouchableOpacity  style={[styles.button, styles.buttonLayout]} onPress={handleLoginPress}>
+					<InsetShadow>
         				<View style={[styles.stateLayer5, styles.contentFlexBox]}>
-          					<Text style={[styles.labelText, styles.labelTextTypo]}>LOGIN</Text>
+          					<Text style={[styles.labelText, styles.labelTextTypo]}>  LOGIN  </Text>
         				</View>
-      			</View>
-      			<View style={[styles.button1, styles.buttonLayout]}>
+					</InsetShadow>
+				</TouchableOpacity>
+				<TouchableOpacity  style={[styles.button1, styles.buttonLayout]} onPress={handleSignUpPress}>
+				  	<InsetShadow>
         				<View style={[styles.stateLayer5, styles.contentFlexBox]}>
           					<Text style={[styles.labelText, styles.labelTextTypo]}>SIGNUP</Text>
         				</View>
+					</InsetShadow>
+				  </TouchableOpacity>
+				<View style={styles.sso}>
+        				<Text style={[styles.singleSignOn, styles.labelTextTypo]}>Single Sign-On</Text>
       			</View>
+				<View style = {styles.ssoBox}>
+				<View style={[styles.fab1, styles.fabShadowBox]}>
+        				<View style={styles.stateLayer}>
+          					<Image style={styles.iconGoogle} resizeMode="cover" source={require(`../assets/🦆 icon _google_.png`)} />
+        				</View>
+      			</View>
+				<View style={[styles.fab2, styles.fabShadowBox]}>
+        				<View style={styles.stateLayer}>
+          					<Image style={styles.iconXLetter} resizeMode="cover" source={require(`../assets/🦆 icon _x letter_.png`)} />
+        				</View>
+      			</View>
+      			<View style={[styles.fab3, styles.fabShadowBox]}>
+        				<View style={styles.stateLayer}>
+          					<Image style={styles.iconXLetter} resizeMode="cover" source={require(`../assets/🦆 icon _facebook_.png`)} />
+        				</View>
+      			</View>
+				</View>
     		</View>);
 };
 
 const styles = StyleSheet.create({
   	fabShadowBox: {
-    		height: 75,
-    		width: 80,
-    		backgroundColor: "#ece6f0",
-    		borderRadius: 16,
-    		shadowOpacity: 1,
-    		elevation: 8,
-    		shadowRadius: 8,
-    		shadowOffset: {
-      			width: 0,
-      			height: 4
-    		},
-    		shadowColor: "rgba(0, 0, 0, 0.15)",
-    		top: 790,
-    		justifyContent: "center",
-    		alignItems: "center",
-    		flexDirection: "row",
-    		position: "absolute",
-    		overflow: "hidden"
+		height: 75,
+		width: 80,
+		backgroundColor: "#ece6f0",
+		borderRadius: 16,
+		shadowOpacity: 1,
+		elevation: 8,
+		shadowRadius: 8,
+		shadowOffset: {
+			  width: 0,
+			  height: 4
+		},
+		shadowColor: "rgba(0, 0, 0, 1)",
+		justifyContent: "center",
+		alignItems: "center",
+		flexDirection: "row",
+		position: "relative",
+		overflow: "hidden"
   	},
   	labelTextTypo: {
     		textAlign: "center",
@@ -97,7 +114,7 @@ const styles = StyleSheet.create({
     		width: 277,
     		elevation: 4,
     		shadowRadius: 4,
-    		shadowColor: "rgba(0, 0, 0, 0.25)",
+    		shadowColor: "rgba(0, 0, 0, 1)",
     		marginLeft: -139,
     		borderTopRightRadius: 4,
     		borderTopLeftRadius: 4,
@@ -107,12 +124,10 @@ const styles = StyleSheet.create({
       			height: 4
     		},
     		left: "50%",
-    		position: "absolute"
+    		position: "relative"
   	},
   	textField1Position: {
-    		borderTopRightRadius: 4,
-    		borderTopLeftRadius: 4,
-    		alignSelf: "stretch",
+    		alignSelf: "center",
     		flex: 1
   	},
   	contentFlexBox: {
@@ -122,43 +137,41 @@ const styles = StyleSheet.create({
   	buttonLayout: {
     		height: 52,
     		width: 209,
-    		backgroundColor: "#000",
+    		backgroundColor: "#9c6f44",
     		borderRadius: 100,
     		justifyContent: "center",
     		alignItems: "center",
     		left: "50%",
-    		position: "absolute",
-    		overflow: "hidden"
+    		position: "relative",
+    		overflow: "hidden",
   	},
   	image2Icon: {
-    		marginLeft: -415,
-    		top: -37,
-    		width: 830,
-    		height: 969,
-    		opacity: 0.1,
-    		left: "50%",
+    		marginLeft: -360,
+    		top: 0,
+    		width: "100%",
+    		height: "100%",
+    		opacity: 1,
+    		left: "100%",
     		position: "absolute"
   	},
   	cafConnect: {
-    		marginLeft: -142,
-    		top: 79,
+    		marginLeft: -130,
+    		top: "5%",
     		fontSize: 36,
     		fontWeight: "700",
     		fontFamily: "JosefinSlab-Bold",
     		color: "#000",
-    		width: 283,
-    		height: 51,
+    		width: "100%",
+    		height: "10%",
     		textAlign: "left",
     		left: "50%",
-    		position: "absolute"
+    		position: "relative"
   	},
   	image1Icon: {
-    		marginLeft: -128,
-    		top: 130,
-    		width: 256,
-    		height: 235,
-    		left: "50%",
-    		position: "absolute"
+    		width: "60%",
+    		height: "30%",
+    		left: "20%",
+    		position: "relative"
   	},
   	iconXLetter: {
     		width: 63,
@@ -170,53 +183,48 @@ const styles = StyleSheet.create({
     		alignItems: "center",
     		flexDirection: "row"
   	},
-  	fab: {
-    		left: 297,
-    		justifyContent: "center",
-    		alignItems: "center",
-    		flexDirection: "row"
-  	},
   	fab1: {
-    		marginLeft: -41,
+    		left: "-5%",
     		justifyContent: "center",
     		alignItems: "center",
-    		flexDirection: "row",
-    		left: "50%"
+    		position: "relative"
+  	},
+  	fab2: {
+    		justifyContent: "center",
+    		alignItems: "center",
+    		left: "0%",
+			position: "relative"
   	},
   	iconGoogle: {
     		width: 69,
     		height: 68
   	},
-  	fab2: {
-    		left: 41,
+  	fab3: {
     		justifyContent: "center",
     		alignItems: "center",
-    		flexDirection: "row"
+			left: "5%",
+			position: "relative"
   	},
   	singleSignOn: {
-    		height: "100%",
-    		top: "0%",
-    		left: "0%",
     		fontSize: 20,
     		display: "flex",
-    		justifyContent: "center",
-    		alignItems: "center",
     		position: "absolute",
-    		width: "100%",
     		color: "#fff",
     		fontFamily: "Roboto-Medium",
     		fontWeight: "500",
-    		lineHeight: 20,
     		letterSpacing: 0
   	},
   	sso: {
-    		top: 699,
-    		left: 94,
+    		top: "7%",
+    		left: "16%",
     		borderRadius: 11,
     		width: 244,
     		height: 50,
     		backgroundColor: "#9c6f44",
-    		position: "absolute"
+    		position: "relative",
+			justifyContent: "center",
+    		alignItems: "center",
+			
   	},
   	inputText: {
     		fontSize: 16,
@@ -240,12 +248,12 @@ const styles = StyleSheet.create({
     		paddingLeft: 16,
     		paddingTop: 4,
     		paddingBottom: 4,
-    		alignSelf: "stretch",
+    		alignSelf: "center",
     		flexDirection: "row"
   	},
   	textField1: {
     		backgroundColor: "#e6e0e9",
-    		alignSelf: "stretch"
+    		alignSelf: "center"
   	},
   	activeIndicator: {
     		borderStyle: "solid",
@@ -255,17 +263,21 @@ const styles = StyleSheet.create({
     		alignSelf: "stretch"
   	},
   	textField: {
-    		top: 391
+    		top: "0%",
+			height: "100%",
+			width: "100%"
   	},
   	textField2: {
-    		top: 466
+    		top: "3%",
+			height: "100%",
+			width: "100%"
   	},
   	labelText: {
     		fontSize: 14
   	},
   	stateLayer5: {
-    		paddingHorizontal: 24,
-    		paddingVertical: 10,
+    		paddingHorizontal: "38%",
+    		paddingVertical: 0,
     		alignSelf: "stretch",
     		backgroundColor: "#9c6f44",
     		justifyContent: "center",
@@ -273,20 +285,26 @@ const styles = StyleSheet.create({
     		flexDirection: "row"
   	},
   	button: {
-    		marginLeft: -105,
-    		top: 535
+			marginLeft: -105,
+			top: "5%",
+			position: "relative"
   	},
   	button1: {
-    		marginLeft: -104,
-    		top: 606
+			marginLeft: -105,
+    		top: "6%",
   	},
   	loginPage: {
     		backgroundColor: "#face8b",
-    		height: 932,
-    		overflow: "hidden",
+    		height: "100%",
     		width: "100%",
-    		flex: 1
-  	}
+    		flex: 1,
+			position: "relative",
+  	},
+	ssoBox: {
+		flexDirection: "row",
+		top: "20%",
+		left: "8.2%"
+	}
 });
 
 export default LoginPage;

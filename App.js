@@ -1,13 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Button, ScrollView } from 'react-native';
 import { initializeApp } from 'firebase/app';
-import { createBottomTabNavigator } from '@react-navigation/native';
+import { getAnalytics } from "firebase/analytics";
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 
 import { getFirestore, collection, getDocs } from 'firebase/firestore/lite';
 
-import LoginPage from './screens/loginScreen';
+import LoginPage from './Screens/loginScreen';
+import SignUpPage from './Screens/signUpScreen';
 
 const firebaseConfig = {
   apiKey: "AIzaSyAD-9qwFM9QtWA9_3ompqWnrCftJqzsPhU",
@@ -19,14 +22,44 @@ const firebaseConfig = {
   measurementId: "G-QPLWC8N3XB"
 };
 
-const Tab = CreateBottomTabNavigator();
+const Tab = createBottomTabNavigator();
+const Stack = createStackNavigator();
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+
 
 export default function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  const handleLogin = () => {
+    setIsLoggedIn(true); // User is logged in
+  };
+  
+  if (!isLoggedIn) {
+    // Show the login page if the user is not logged in
+    return (
+      <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen
+            name="Login"
+            children={(props) => <LoginPage {...props} onLogin={handleLogin} />}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="SignUp"
+            component={() => <SignUpPage/>}
+            options={{ headerShown: true }}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    );
+  }
+
   return (
     <View style={styles.container}>
       <NavigationContainer>
-        <Tab.Navigator initialRouteName = "login">
-            <Tab.Screen name="login" component={LoginPage} />
+        <Tab.Navigator id="test" initialRouteName = "Home">
+            <Tab.Screen name="Home" component={HomePage} options={{ headerShown: false }}/>
         </Tab.Navigator>
       </NavigationContainer>
     </View>
@@ -36,7 +69,6 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingBottom: 20,
     backgroundColor: '#fff',
     //alignItems: 'center',
     //justifyContent: 'center',
