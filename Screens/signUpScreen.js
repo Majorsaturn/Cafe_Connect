@@ -1,47 +1,90 @@
 import * as React from "react";
-import {Image, StyleSheet, Text, View} from "react-native";
+import {Image, StyleSheet, Text, View, TextInput, TouchableOpacity} from "react-native";
+import InsetShadow from 'react-native-inset-shadow';
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { getFirestore, addDoc, collection } from "firebase/firestore";
+import { useFonts, Roboto_500Medium, Roboto_400Regular } from '@expo-google-fonts/roboto';
 
-const SignUpPage = () => {
-  	
+const SignUpPage = ({navigation, fbApp}) => {
+	const auth = getAuth(fbApp);
+	const db = getFirestore(fbApp);
+
+	const [First_Name, onChangeFName] = React.useState('');
+	const [Last_Name, onChangeLName] = React.useState('');
+	const [Password, onChangePassword] = React.useState('');
+	const [Email, onChangeEmail] = React.useState('');
+	const [Username, onChangeUsername] = React.useState('');
+	const [UDate, setDate] = React.useState('');
+
+	const handleInputChangeDate = (newText) => {
+		const formattedText = newText
+			.replace(/\D/g, '')
+			.replace(/(\d{2})(\d{2})/, '$1/$2/')
+			.substring(0, 10);
+		setDate(formattedText);
+	};
+
+	let [fontsLoaded] = useFonts({
+		Roboto_500Medium,
+		Roboto_400Regular,
+	});
+
+	const handleLoginPress = () => {
+		navigation.navigate('Login');
+	};
+
+	const handleCreateAccountPress = async () => {
+		try {
+			const userCredential = await createUserWithEmailAndPassword(auth, Email, Password);
+			const user = userCredential.user;
+			console.log("User UID:", user.uid);
+
+			const [month, day, year] = UDate.split('/').map(part => parseInt(part, 10));
+			const dateObject = new Date(year, month - 1, day);
+
+			// Add user data to Firestore
+			const docRef = await addDoc(collection(db, "Users"), {
+				firstname: First_Name,
+				lastname: Last_Name,
+				birthday: dateObject,
+				username: Username,
+				password: Password,
+				UID: user.uid,
+				Friends: []
+			});
+			console.log("Document written with ID: ", docRef.id);
+			const docRef2 = await addDoc(collection(db, "Usersettings"), {
+				input: "test mic",
+				light_dark: true,
+				notifications: true,
+				output: "test speaker",
+				status: "offline",
+				UID: user.uid,
+				subscribed: false
+			});
+			console.log("Document written with ID: ", docRef2.id);
+			// Navigate to Login after successful signup
+			navigation.navigate('Login');
+		} catch (error) {
+			console.error("Error during account creation:", error.message);
+		}
+	}
+
   	return (
     		<View style={styles.signUpPage}>
-      			<Image style={[styles.image2Icon, styles.buttonPosition]} resizeMode="cover" source={require("../assets/image_2.png")} />
-      			<View style={[styles.button, styles.buttonPosition]}>
-        				<View style={styles.stateLayer}>
-          					<Text style={styles.labelText}>CREATE ACCOUNT</Text>
-        				</View>
-      			</View>
-      			<Text style={[styles.cafConnect, styles.buttonPosition]}>CAFÉ CONNECT</Text>
-      			<View style={[styles.textField, styles.textShadowBox]}>
-        				<View style={[styles.textField1, styles.statePosition]}>
-          					<View style={[styles.stateLayer1, styles.statePosition]}>
-            						<View style={[styles.content, styles.contentSpaceBlock]}>
-              							<View style={styles.inputTextContainer}>
-                								<Text style={styles.inputText}>Username</Text>
-              							</View>
-            						</View>
-          					</View>
-        				</View>
-        				<View style={styles.activeIndicator} />
-      			</View>
-      			<View style={[styles.textField2, styles.textShadowBox]}>
-        				<View style={[styles.textField1, styles.statePosition]}>
-          					<View style={[styles.stateLayer1, styles.statePosition]}>
-            						<View style={[styles.content, styles.contentSpaceBlock]}>
-              							<View style={styles.inputTextContainer}>
-                								<Text style={styles.inputText}>Password</Text>
-              							</View>
-            						</View>
-          					</View>
-        				</View>
-        				<View style={styles.activeIndicator} />
-      			</View>
+      			<Image style={[styles.image2Icon]} resizeMode="cover" source={require("../assets/image_2.png")} />
+      			<Text style={[styles.cafConnect]}>CAFÉ CONNECT</Text>
       			<View style={[styles.textField4, styles.textShadowBox]}>
         				<View style={[styles.textField1, styles.statePosition]}>
           					<View style={[styles.stateLayer1, styles.statePosition]}>
             						<View style={[styles.content, styles.contentSpaceBlock]}>
               							<View style={styles.inputTextContainer}>
-                								<Text style={styles.inputText}>First Name</Text>
+											<TextInput
+												style={styles.input}
+												onChangeText={onChangeFName}
+												value={First_Name}
+												placeholder="First Name"
+											/>
               							</View>
             						</View>
           					</View>
@@ -53,7 +96,12 @@ const SignUpPage = () => {
           					<View style={[styles.stateLayer1, styles.statePosition]}>
             						<View style={[styles.content, styles.contentSpaceBlock]}>
               							<View style={styles.inputTextContainer}>
-                								<Text style={styles.inputText}>Last Name</Text>
+											<TextInput
+												style={styles.input}
+												onChangeText={onChangeLName}
+												value={Last_Name}
+												placeholder="Last Name"
+											/>
               							</View>
             						</View>
           					</View>
@@ -65,7 +113,12 @@ const SignUpPage = () => {
           					<View style={[styles.stateLayer1, styles.statePosition]}>
             						<View style={[styles.content, styles.contentSpaceBlock]}>
               							<View style={styles.inputTextContainer}>
-                								<Text style={styles.inputText}>Email</Text>
+											<TextInput
+												style={styles.input}
+												onChangeText={onChangeEmail}
+												value={Email}
+												placeholder="Email"
+											/>
               							</View>
             						</View>
           					</View>
@@ -77,20 +130,76 @@ const SignUpPage = () => {
           					<View style={[styles.stateLayer6, styles.contentSpaceBlock]}>
             						<View style={[styles.content, styles.contentSpaceBlock]}>
               							<View style={styles.inputTextContainer}>
-                								<Text style={styles.inputText}>Date of Birth (mm/dd/yyyy)</Text>
+											<TextInput
+												style={styles.input}
+												onChangeText={handleInputChangeDate}
+												value={UDate}
+												placeholder="Birthday mm/dd/yyyy"
+												keyboardType="numeric"
+											/>
               							</View>
             						</View>
           					</View>
         				</View>
         				<View style={styles.activeIndicator} />
       			</View>
+				<View style={[styles.textField, styles.textShadowBox]}>
+					<View style={[styles.textField1, styles.statePosition]}>
+						<View style={[styles.stateLayer1, styles.statePosition]}>
+							<View style={[styles.content, styles.contentSpaceBlock]}>
+								<View style={styles.inputTextContainer}>
+									<TextInput
+										style={styles.input}
+										onChangeText={onChangeUsername}
+										value={Username}
+										placeholder="Username"
+										//keyboardType="numeric"
+									/>
+								</View>
+							</View>
+						</View>
+					</View>
+					<View style={styles.activeIndicator} />
+				</View>
+				<View style={[styles.textField2, styles.textShadowBox]}>
+					<View style={[styles.textField1, styles.statePosition]}>
+						<View style={[styles.stateLayer1, styles.statePosition]}>
+							<View style={[styles.content, styles.contentSpaceBlock]}>
+								<View style={styles.inputTextContainer}>
+									<TextInput
+										style={styles.input}
+										onChangeText={onChangePassword}
+										value={Password}
+										placeholder="Password"
+										secureTextEntry={true}
+									/>
+								</View>
+							</View>
+						</View>
+					</View>
+					<View style={styles.activeIndicator} />
+				</View>
+				<TouchableOpacity style={[styles.button, styles.buttonPosition]} onPress={handleCreateAccountPress}>
+					<InsetShadow>
+						<View style={styles.stateLayer}>
+							<Text style={styles.labelText}>CREATE ACCOUNT</Text>
+						</View>
+					</InsetShadow>
+				</TouchableOpacity>
+				<TouchableOpacity style={[styles.button1, styles.buttonPosition]} onPress={handleLoginPress}>
+					<InsetShadow>
+						<View style={styles.stateLayer3}>
+							<Text style={styles.labelText}>LOGIN</Text>
+						</View>
+					</InsetShadow>
+				</TouchableOpacity>
     		</View>);
 };
 
 const styles = StyleSheet.create({
   	buttonPosition: {
     		left: "50%",
-    		position: "absolute"
+    		position: "relative"
   	},
   	textShadowBox: {
     		height: 56,
@@ -107,7 +216,7 @@ const styles = StyleSheet.create({
     		borderTopRightRadius: 4,
     		borderTopLeftRadius: 4,
     		left: "50%",
-    		position: "absolute"
+    		position: "relative"
   	},
   	statePosition: {
     		borderTopRightRadius: 4,
@@ -118,27 +227,27 @@ const styles = StyleSheet.create({
     		paddingVertical: 4,
     		flex: 1
   	},
-  	image2Icon: {
-        marginLeft: -360,
-        top: 0,
-        width: "100%",
-        height: "100%",
-        opacity: 1,
-        left: "100%",
-        position: "absolute"
-  },
+	image2Icon: {
+		marginLeft: -360,
+		top: 0,
+		width: "100%",
+		height: "100%",
+		opacity: 1,
+		left: "100%",
+		position: "absolute"
+	},
   	labelText: {
     		fontSize: 14,
     		letterSpacing: 0,
     		lineHeight: 20,
     		fontWeight: "500",
-    		fontFamily: "Roboto-Medium",
+    		fontFamily: "Roboto_500Medium",
     		color: "#fff",
     		textAlign: "center"
   	},
   	stateLayer: {
     		backgroundColor: "#9c6f44",
-    		paddingHorizontal: 24,
+			paddingHorizontal: "21.8%",
     		paddingVertical: 10,
     		flexDirection: "row",
     		alignSelf: "stretch",
@@ -148,7 +257,7 @@ const styles = StyleSheet.create({
   	},
   	button: {
     		marginLeft: -106,
-    		top: 746,
+    		top: "23%",
     		borderRadius: 100,
     		backgroundColor: "#000",
     		width: 209,
@@ -157,22 +266,24 @@ const styles = StyleSheet.create({
     		alignItems: "center",
     		overflow: "hidden"
   	},
-  	cafConnect: {
-    		marginLeft: -141,
-    		top: 79,
-    		fontSize: 36,
-    		fontWeight: "700",
-    		fontFamily: "JosefinSlab-Bold",
-    		color: "#000",
-    		width: 283,
-    		height: 43,
-    		textAlign: "left"
-  	},
+	cafConnect: {
+		marginLeft: -130,
+		top: "5%",
+		fontSize: 36,
+		fontWeight: "300",
+		fontFamily: "Roboto_500Medium",
+		color: "#000",
+		width: "100%",
+		height: "10%",
+		textAlign: "left",
+		left: "50%",
+		position: "relative"
+	},
   	inputText: {
     		fontSize: 16,
     		letterSpacing: 1,
     		lineHeight: 24,
-    		fontFamily: "Roboto-Regular",
+    		fontFamily: "Roboto_400Regular",
     		color: "#1d1b20",
     		textAlign: "left"
   	},
@@ -204,19 +315,19 @@ const styles = StyleSheet.create({
     		alignSelf: "stretch"
   	},
   	textField: {
-    		top: 526
+    		top: "17%"
   	},
   	textField2: {
-    		top: 606
+    		top: "20%"
   	},
   	textField4: {
-    		top: 206
+    		top: "5%"
   	},
   	textField6: {
-    		top: 286
+    		top: "8%"
   	},
   	textField8: {
-    		top: 366
+    		top: "11%"
   	},
   	stateLayer6: {
     		paddingHorizontal: 16,
@@ -226,7 +337,7 @@ const styles = StyleSheet.create({
     		flexDirection: "row"
   	},
   	textField10: {
-    		top: 446
+    		top: "14%"
   	},
   	signUpPage: {
     		backgroundColor: "#face8b",
@@ -234,7 +345,28 @@ const styles = StyleSheet.create({
     		height: 932,
     		overflow: "hidden",
     		flex: 1
-  	}
+  	},
+	button1: {
+		marginLeft: -106,
+		top: "26%",
+		borderRadius: 100,
+		backgroundColor: "#000",
+		width: 209,
+		height: 52,
+		justifyContent: "center",
+		alignItems: "center",
+		overflow: "hidden"
+	},
+	stateLayer3: {
+		backgroundColor: "#9c6f44",
+		paddingHorizontal: "40.3%",
+		paddingVertical: 10,
+		flexDirection: "row",
+		alignSelf: "stretch",
+		justifyContent: "center",
+		alignItems: "center",
+		flex: 1
+	}
 });
 
 export default SignUpPage;

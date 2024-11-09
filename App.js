@@ -11,6 +11,8 @@ import { getFirestore, collection, getDocs } from 'firebase/firestore/lite';
 
 import LoginPage from './Screens/loginScreen';
 import SignUpPage from './Screens/signUpScreen';
+import HomeScreen from './Screens/homeScreen';
+import AudioPage from './Screens/audioScreen';
 
 const firebaseConfig = {
   apiKey: "AIzaSyAD-9qwFM9QtWA9_3ompqWnrCftJqzsPhU",
@@ -24,8 +26,8 @@ const firebaseConfig = {
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+const fbApp = initializeApp(firebaseConfig);
+const analytics = getAnalytics(fbApp);
 
 
 export default function App() {
@@ -47,8 +49,8 @@ export default function App() {
           />
           <Stack.Screen
             name="SignUp"
-            component={() => <SignUpPage/>}
-            options={{ headerShown: true }}
+            children={(props) => <SignUpPage {...props} fbApp={fbApp} />}
+            options={{ headerShown: false }}
           />
         </Stack.Navigator>
       </NavigationContainer>
@@ -59,7 +61,8 @@ export default function App() {
     <View style={styles.container}>
       <NavigationContainer>
         <Tab.Navigator id="test" initialRouteName = "Home">
-            <Tab.Screen name="Home" component={HomePage} options={{ headerShown: false }}/>
+            <Tab.Screen name="Home" component={HomeScreen} options={{ headerShown: false }}/>
+          <Tab.Screen name="Audio" component={AudioPage} options={{ headerShown: false }}/>
         </Tab.Navigator>
       </NavigationContainer>
     </View>
@@ -70,7 +73,5 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    //alignItems: 'center',
-    //justifyContent: 'center',
   },
 });

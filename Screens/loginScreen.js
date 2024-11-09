@@ -1,10 +1,17 @@
 import * as React from "react";
-import {Image, StyleSheet, Text, View, Button, TouchableOpacity} from "react-native";
+import {Image, StyleSheet, Text, View, Button, TouchableOpacity, TextInput} from "react-native";
 import InsetShadow from 'react-native-inset-shadow';
-
-import SignUpPage from './signUpScreen';
+import { getAuth } from "firebase/auth";
+import { useFonts, Roboto_500Medium, Roboto_400Regular } from '@expo-google-fonts/roboto';
 
 const LoginPage = ({navigation, onLogin}) => {
+	let [fontsLoaded] = useFonts({
+		Roboto_500Medium,
+		Roboto_400Regular,
+	});
+
+	const [Username, onChangeUsername] = React.useState('');
+	const [Password, onChangePassword] = React.useState('');
 
 	const handleLoginPress = () => {
 		// Logic for login, e.g., Firebase authentication
@@ -24,7 +31,12 @@ const LoginPage = ({navigation, onLogin}) => {
           					<View style={[styles.stateLayer3, styles.textField1Position]}>
             						<View style={[styles.content, styles.contentFlexBox]}>
               							<View style={styles.inputTextContainer}>
-                								<Text style={styles.inputText}>Username</Text>
+											<TextInput
+												style={styles.input}
+												onChangeText={onChangeUsername}
+												value={Username}
+												placeholder="Username"
+											/>
               							</View>
             						</View>
           					</View>
@@ -36,7 +48,12 @@ const LoginPage = ({navigation, onLogin}) => {
           					<View style={[styles.stateLayer3, styles.textField1Position]}>
             						<View style={[styles.content, styles.contentFlexBox]}>
               							<View style={styles.inputTextContainer}>
-                								<Text style={styles.inputText}>Password</Text>
+											<TextInput
+												style={styles.input}
+												onChangeText={onChangePassword}
+												value={Password}
+												placeholder="Password"
+											/>
               							</View>
             						</View>
           					</View>
@@ -104,7 +121,7 @@ const styles = StyleSheet.create({
   	labelTextTypo: {
     		textAlign: "center",
     		color: "#fff",
-    		fontFamily: "Roboto-Medium",
+    		fontFamily: "Roboto_500Medium",
     		fontWeight: "500",
     		lineHeight: 20,
     		letterSpacing: 0
@@ -158,8 +175,8 @@ const styles = StyleSheet.create({
     		marginLeft: -130,
     		top: "5%",
     		fontSize: 36,
-    		fontWeight: "700",
-    		fontFamily: "JosefinSlab-Bold",
+			fontWeight: "300",
+			fontFamily: "Roboto_500Medium",
     		color: "#000",
     		width: "100%",
     		height: "10%",
@@ -210,7 +227,7 @@ const styles = StyleSheet.create({
     		display: "flex",
     		position: "absolute",
     		color: "#fff",
-    		fontFamily: "Roboto-Medium",
+    		fontFamily: "Roboto_500Medium",
     		fontWeight: "500",
     		letterSpacing: 0
   	},
@@ -230,7 +247,7 @@ const styles = StyleSheet.create({
     		fontSize: 16,
     		letterSpacing: 1,
     		lineHeight: 24,
-    		fontFamily: "Roboto-Regular",
+    		fontFamily: "Roboto_400Regular",
     		color: "#1d1b20",
     		textAlign: "left"
   	},
