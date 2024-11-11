@@ -16,7 +16,7 @@ const SignUpPage = ({navigation, fbApp}) => {
 	const [Username, onChangeUsername] = React.useState('');
 	const [UDate, setDate] = React.useState('');
 
-	const handleInputChangeDate = (newText) => {
+	const handleInputChangeDate = async (newText) => {
 		const formattedText = newText
 			.replace(/\D/g, '')
 			.replace(/(\d{2})(\d{2})/, '$1/$2/')
@@ -29,7 +29,7 @@ const SignUpPage = ({navigation, fbApp}) => {
 		Roboto_400Regular,
 	});
 
-	const handleLoginPress = () => {
+	const handleLoginPress = async () => {
 		navigation.navigate('Login');
 	};
 

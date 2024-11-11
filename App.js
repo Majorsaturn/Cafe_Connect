@@ -7,12 +7,13 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
-import { getFirestore, collection, getDocs } from 'firebase/firestore/lite';
-
 import LoginPage from './Screens/loginScreen';
 import SignUpPage from './Screens/signUpScreen';
 import HomeScreen from './Screens/homeScreen';
 import AudioPage from './Screens/audioScreen';
+import FriendsPage from './Screens/friendScreen';
+import TableRoom from './Screens/tableScreen'
+
 
 const firebaseConfig = {
   apiKey: "AIzaSyAD-9qwFM9QtWA9_3ompqWnrCftJqzsPhU",
@@ -27,8 +28,6 @@ const firebaseConfig = {
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 const fbApp = initializeApp(firebaseConfig);
-const analytics = getAnalytics(fbApp);
-
 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -44,7 +43,7 @@ export default function App() {
         <Stack.Navigator>
           <Stack.Screen
             name="Login"
-            children={(props) => <LoginPage {...props} onLogin={handleLogin} />}
+            children={(props) => <LoginPage {...props} onLogin={handleLogin} fbApp={fbApp}/>}
             options={{ headerShown: false }}
           />
           <Stack.Screen
@@ -57,12 +56,31 @@ export default function App() {
     );
   }
 
+
   return (
     <View style={styles.container}>
       <NavigationContainer>
         <Tab.Navigator id="test" initialRouteName = "Home">
-            <Tab.Screen name="Home" component={HomeScreen} options={{ headerShown: false }}/>
-          <Tab.Screen name="Audio" component={AudioPage} options={{ headerShown: false }}/>
+          <Tab.Screen
+              name="Home"
+              children={(props) => <HomeScreen {...props} fbApp={fbApp} />}
+              options={{ headerShown: false }}
+          />
+          <Tab.Screen
+              name="Audio"
+              children={(props) => <AudioPage {...props} fbApp={fbApp} />}
+              options={{ headerShown: false }}
+          />
+          <Tab.Screen
+              name="Friends"
+              children={(props) => <FriendsPage {...props} fbApp={fbApp} />}
+              options={{ headerShown: false }}
+          />
+          <Tab.Screen
+              name="Table"
+              children={(props) => <TableRoom {...props} fbApp={fbApp} />}
+              options={{ headerShown: false }}
+          />
         </Tab.Navigator>
       </NavigationContainer>
     </View>
@@ -72,6 +90,5 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
   },
 });

@@ -1,7 +1,8 @@
 import * as React from "react";
 import {Image, StyleSheet, Text, View} from "react-native";
+import { useFonts, Roboto_500Medium, Roboto_400Regular } from '@expo-google-fonts/roboto';
 
-const AudioScreen = () => {
+const AudioScreen = ({fbApp}) => {
 
     return (
         <View style={styles.audioPage}>

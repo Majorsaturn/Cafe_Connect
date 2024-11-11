@@ -1,106 +1,47 @@
 import * as React from "react";
 import {StyleSheet, View, Image, Pressable, Text} from "react-native";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { useFonts, Roboto_500Medium, Roboto_400Regular } from '@expo-google-fonts/roboto';
 
-const HomePage = () => {
+const HomePage = ({fbApp}) => {
+    const auth = getAuth(fbApp);
+
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            // User is signed in, see docs for a list of available properties
+            const uid = user.uid;
+            console.log(uid);
+        } else {
+            // User is signed out
+        }
+    });
 
     return (
         <View style={styles.homePage}>
-            <View style={styles.homePageChild} />
-            <View style={styles.homePageItem} />
-            <View style={styles.homePageInner} />
-            <View style={[styles.profileIcon, styles.iconPosition]}>
-                <Pressable style={styles.wrapper} onPress={()=>{}}>
-                    <Image style={styles.icon} resizeMode="cover" source="Ellipse 1.png" />
-                </Pressable>
-                <Image style={[styles.pfpIcon, styles.iconLayout1]} resizeMode="cover" source="pfp icon.png" />
-                <Text style={styles.username}>Username</Text>
-            </View>
-            <View style={[styles.adSpace, styles.spaceLayout]}>
-                <View style={[styles.adSpaceChild, styles.spaceLayout]} />
-                <View style={styles.adSpaceItem} />
-                <Text style={styles.adSpace1}>Ad Space</Text>
-            </View>
-            <View style={[styles.adSpace2, styles.spaceLayout]}>
-                <View style={[styles.adSpaceChild, styles.spaceLayout]} />
-                <View style={styles.adSpaceItem} />
-                <Text style={styles.adSpace1}>Ad Space</Text>
-            </View>
-            <View style={[styles.table1, styles.tableLayout]}>
-                <Image style={[styles.table1Child, styles.childPosition]} resizeMode="cover" source="Line 1.png" />
-                <Image style={[styles.table1Item, styles.itemLayout]} resizeMode="cover" source="Ellipse 2.png" />
-                <Image style={[styles.mug4Icon, styles.mug4IconLayout]} resizeMode="cover" source="Mug 4.png" />
-                <Image style={[styles.mug5Icon, styles.mug5IconPosition]} resizeMode="cover" source="Mug 5.png" />
-                <View style={[styles.privatepublicMarker, styles.privatepublicLayout]}>
-                    <View style={[styles.privatepublicMarkerChild, styles.childLayout]} />
-                    <Text style={styles.public}>Public</Text>
-                </View>
-                <View style={[styles.namejoin, styles.namejoinLayout]}>
-                    <View style={styles.namejoinShadowBox} />
-                    <Text style={styles.title}>Chilling/studying</Text>
-                    <View style={[styles.button, styles.buttonShadowBox]}>
-                        <Pressable style={styles.stateFlexBox} onPress={()=>{}}>
-                            <Text style={styles.labelTypo}>Join</Text>
-                        </Pressable>
-                    </View>
+            <View style={styles.homePageInner} >
+                <View style={[styles.profileIcon, styles.iconPosition]}>
+                    <Pressable style={styles.wrapper} onPress={()=>{}}>
+                        <Image style={styles.icon} resizeMode="cover" source={require("../assets/Ellipse 1.png")} />
+                    </Pressable>
+                    <Text style={styles.username}>Username</Text>
+                    <Text style={[styles.cafConnect, styles.labelText1Position]}>CAFÉ CONNECT</Text>
                 </View>
             </View>
-            <View style={[styles.table2, styles.tableLayout]}>
-                <Image style={[styles.table2Child, styles.childLayout]} resizeMode="cover" source="Line 1.png" />
-                <Image style={[styles.table2Item, styles.itemLayout]} resizeMode="cover" source="Ellipse 2.png" />
-                <Image style={[styles.mug4Icon1, styles.mug4IconLayout]} resizeMode="cover" source="Mug 4.png" />
-                <Image style={[styles.mug5Icon1, styles.mug5IconPosition]} resizeMode="cover" source="Mug 5.png" />
-                <View style={[styles.privatepublicMarker1, styles.privatepublicLayout]}>
-                    <View style={[styles.privatepublicMarkerChild, styles.childLayout]} />
-                    <Text style={styles.public}>Private</Text>
-                </View>
-                <View style={[styles.namejoin1, styles.namejoinLayout]}>
-                    <View style={styles.namejoinShadowBox} />
-                    <Text style={styles.title}>Game Brainstorming</Text>
-                    <View style={[styles.button1, styles.buttonShadowBox]}>
-                        <View style={[styles.stateLayer1, styles.stateFlexBox]}>
-                            <Text style={[styles.labelText1, styles.labelTypo]}>Join</Text>
-                        </View>
-                        <Image style={styles.lockIcon} resizeMode="cover" source="Lock.png" />
-                    </View>
-                </View>
+            <View style={styles.homePageItem} >
+            <Text>test</Text>
             </View>
-            <View style={styles.table3}>
-                <Image style={[styles.table3Child, styles.childPosition]} resizeMode="cover" source="Line 1.png" />
-                <Image style={[styles.table3Item, styles.mug1IconPosition]} resizeMode="cover" source="Ellipse 2.png" />
-                <Image style={[styles.mug1Icon, styles.mug1IconPosition]} resizeMode="cover" source="Mug 1.png" />
-                <Image style={styles.mug2Icon} resizeMode="cover" source="Mug 2.png" />
-                <Image style={[styles.mug3Icon, styles.mug4IconLayout]} resizeMode="cover" source="Mug 3.png" />
-                <Image style={[styles.mug4Icon2, styles.mug4IconLayout]} resizeMode="cover" source="Mug 4.png" />
-                <View style={[styles.namejoin2, styles.namejoinLayout]}>
-                    <View style={styles.namejoinShadowBox} />
-                    <Text style={styles.title}>join if bored</Text>
-                    <View style={[styles.button2, styles.buttonShadowBox]}>
-                        <Pressable style={styles.stateFlexBox} onPress={()=>{}}>
-                            <Text style={styles.labelTypo}>Join</Text>
-                        </Pressable>
-                    </View>
-                </View>
-                <View style={[styles.privatepublicMarker2, styles.privatepublicLayout]}>
-                    <View style={[styles.privatepublicMarkerChild, styles.childLayout]} />
-                    <Text style={styles.public}>Public</Text>
-                </View>
+            <View style={styles.homePageChild} >
+            <Text>test</Text>
             </View>
-            <View style={styles.mediaPlayer}>
-                <Image style={[styles.iconPlay, styles.iconLayout1]} resizeMode="cover" source={`🦆 icon "play".png`} />
-                <Image style={[styles.iconForward, styles.iconLayout]} resizeMode="cover" source={`🦆 icon "forward".png`} />
-                <Image style={[styles.iconForward1, styles.iconLayout]} resizeMode="cover" source={`🦆 icon "forward".png`} />
-                <Text style={[styles.text, styles.textTypo]}>0:00</Text>
-                <Text style={[styles.cafCalm, styles.textTypo]}>Café Calm</Text>
-            </View>
-            <Text style={[styles.cafConnect, styles.labelText1Position]}>CAFÉ CONNECT</Text>
+            
             <Image style={styles.navigationBarIcon} resizeMode="cover" source="Navigation Bar.png" />
         </View>);
 };
 
 const styles = StyleSheet.create({
     iconPosition: {
-        left: 12,
-        position: "absolute"
+        left: 0,
+        position: "relative"
     },
     iconLayout1: {
         maxHeight: "100%",
@@ -220,21 +161,19 @@ const styles = StyleSheet.create({
         position: "absolute"
     },
     labelText1Position: {
-        left: "50%",
-        position: "absolute"
+        left: "150%",
+        position: "relative"
     },
     homePageChild: {
-        top: 370,
         left: -1,
         width: 432,
         height: 562,
         backgroundColor: "#face8b",
-        position: "absolute"
+        position: "relative"
     },
     homePageItem: {
-        top: 68,
         width: 430,
-        height: 302,
+        height: "30%",
         backgroundColor: "#9c6f44",
         shadowOpacity: 1,
         elevation: 4,
@@ -245,19 +184,20 @@ const styles = StyleSheet.create({
         },
         shadowColor: "rgba(0, 0, 0, 0.25)",
         left: 0,
-        position: "absolute"
+        position: "relative"
     },
     homePageInner: {
         width: 431,
-        height: 68,
+        height: "12%",
         top: 0,
         left: 0,
         backgroundColor: "#face8b",
-        position: "absolute"
+        position: "relative"
     },
     icon: {
-        height: "100%",
-        width: "100%"
+        height: "120%",
+        backgroundColor: "black",
+        top: "20%"
     },
     wrapper: {
         width: 46,
@@ -269,13 +209,9 @@ const styles = StyleSheet.create({
     pfpIcon: {
         height: "60.38%",
         width: "24.11%",
-        top: "13.21%",
-        right: "71.63%",
-        bottom: "26.42%",
-        left: "4.26%"
     },
     username: {
-        left: 52,
+        left: "40%",
         width: 89,
         textShadowColor: "rgba(0, 0, 0, 0.25)",
         textShadowOffset: {
@@ -283,7 +219,7 @@ const styles = StyleSheet.create({
             height: 4
         },
         textShadowRadius: 4,
-        height: 39,
+        height: "100%",
         justifyContent: "center",
         alignItems: "center",
         display: "flex",
@@ -294,13 +230,14 @@ const styles = StyleSheet.create({
         lineHeight: 20,
         letterSpacing: 0,
         fontSize: 18,
-        top: 14,
-        position: "absolute"
+        top: "70%",
+        position: "relative"
     },
     profileIcon: {
-        top: 13,
+        top: 20,
         width: 141,
-        height: 53
+        height: 53,
+        position: "relative"
     },
     adSpaceChild: {
         top: 0,
@@ -582,26 +519,16 @@ const styles = StyleSheet.create({
         marginLeft: -79.46,
         top: 0
     },
-    mediaPlayer: {
-        height: "16.2%",
-        width: "41.4%",
-        top: "22.64%",
-        right: "28.14%",
-        bottom: "61.16%",
-        left: "30.47%",
-        position: "absolute"
-    },
     cafConnect: {
-        marginLeft: 51,
-        top: 12,
+        top: "-100%",
         fontWeight: "700",
         fontFamily: "JosefinSlab-Bold",
         width: 160,
-        height: 48,
+        height: 60,
         fontSize: 24,
-        left: "50%",
         textAlign: "center",
-        color: "#000"
+        color: "#000",
+        position: "relative"
     },
     navigationBarIcon: {
         top: 862,
@@ -612,7 +539,6 @@ const styles = StyleSheet.create({
     },
     homePage: {
         backgroundColor: "#fff",
-        height: 932,
         overflow: "hidden",
         flex: 1,
         width: "100%"

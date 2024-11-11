@@ -1,24 +1,36 @@
 import * as React from "react";
-import {Image, StyleSheet, Text, View, Button, TouchableOpacity, TextInput} from "react-native";
+import {Image, StyleSheet, Text, View, TouchableOpacity, TextInput} from "react-native";
 import InsetShadow from 'react-native-inset-shadow';
-import { getAuth } from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { useFonts, Roboto_500Medium, Roboto_400Regular } from '@expo-google-fonts/roboto';
 
-const LoginPage = ({navigation, onLogin}) => {
+const LoginPage = ({navigation, onLogin, fbApp}) => {
 	let [fontsLoaded] = useFonts({
 		Roboto_500Medium,
 		Roboto_400Regular,
 	});
 
-	const [Username, onChangeUsername] = React.useState('');
+	const auth = getAuth(fbApp);
+
+	const [Email, onChangeEmail] = React.useState('');
 	const [Password, onChangePassword] = React.useState('');
 
-	const handleLoginPress = () => {
+	const handleLoginPress = async () => {
 		// Logic for login, e.g., Firebase authentication
-		onLogin(); // Call the onLogin callback passed from App
-		navigation.navigate('Home');
+		const userCredential = await signInWithEmailAndPassword(auth, Email, Password)
+			.then((userCredential) => {
+				// Signed in
+				const user = userCredential.user;
+				console.log("User UID:", user.uid);
+				onLogin(); // Call the onLogin callback passed from App
+			})
+			.catch((error) => {
+				const errorCode = error.code;
+				const errorMessage = error.message;
+				console.log(errorMessage);
+			});
 	  };
-	const handleSignUpPress = () => {
+	const handleSignUpPress = async () => {
 		navigation.navigate('SignUp');
 	}
   	return (
@@ -33,9 +45,9 @@ const LoginPage = ({navigation, onLogin}) => {
               							<View style={styles.inputTextContainer}>
 											<TextInput
 												style={styles.input}
-												onChangeText={onChangeUsername}
-												value={Username}
-												placeholder="Username"
+												onChangeText={onChangeEmail}
+												value={Email}
+												placeholder="Email"
 											/>
               							</View>
             						</View>
@@ -53,6 +65,7 @@ const LoginPage = ({navigation, onLogin}) => {
 												onChangeText={onChangePassword}
 												value={Password}
 												placeholder="Password"
+												secureTextEntry={true}
 											/>
               							</View>
             						</View>
