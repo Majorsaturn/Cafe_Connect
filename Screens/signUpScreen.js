@@ -1,7 +1,7 @@
 import * as React from "react";
 import {Image, StyleSheet, Text, View, TextInput, TouchableOpacity} from "react-native";
 import InsetShadow from 'react-native-inset-shadow';
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { getFirestore, addDoc, collection } from "firebase/firestore";
 import { useFonts, Roboto_500Medium, Roboto_400Regular } from '@expo-google-fonts/roboto';
 
@@ -35,13 +35,21 @@ const SignUpPage = ({navigation, fbApp}) => {
 
 	const handleCreateAccountPress = async () => {
 		try {
+			// Create user with email and password
 			const userCredential = await createUserWithEmailAndPassword(auth, Email, Password);
 			const user = userCredential.user;
 			console.log("User UID:", user.uid);
-
+	
+			// Set the user's displayName to the chosen username
+			await updateProfile(user, {
+				displayName: Username,  // Set the displayName to the username
+			});
+			console.log("Display name set:", user.displayName);  // Confirm the displayName
+	
+			// Convert the date into a proper format
 			const [month, day, year] = UDate.split('/').map(part => parseInt(part, 10));
 			const dateObject = new Date(year, month - 1, day);
-
+	
 			// Add user data to Firestore
 			const docRef = await addDoc(collection(db, "Users"), {
 				firstname: First_Name,
@@ -53,6 +61,8 @@ const SignUpPage = ({navigation, fbApp}) => {
 				Friends: []
 			});
 			console.log("Document written with ID: ", docRef.id);
+	
+			// Add user settings to Firestore
 			const docRef2 = await addDoc(collection(db, "Usersettings"), {
 				input: "test mic",
 				light_dark: true,
@@ -63,12 +73,13 @@ const SignUpPage = ({navigation, fbApp}) => {
 				subscribed: false
 			});
 			console.log("Document written with ID: ", docRef2.id);
+	
 			// Navigate to Login after successful signup
 			navigation.navigate('Login');
 		} catch (error) {
 			console.error("Error during account creation:", error.message);
 		}
-	}
+	};
 
   	return (
     		<View style={styles.signUpPage}>

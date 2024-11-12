@@ -12,7 +12,8 @@ import SignUpPage from './Screens/signUpScreen';
 import HomeScreen from './Screens/homeScreen';
 import AudioPage from './Screens/audioScreen';
 import FriendsPage from './Screens/friendScreen';
-import TableRoom from './Screens/tableScreen'
+import TableRoom from './Screens/tableScreen';
+import SettingsPage from './Screens/settingScreen';
 
 
 const firebaseConfig = {
@@ -60,7 +61,12 @@ export default function App() {
   return (
     <View style={styles.container}>
       <NavigationContainer>
-        <Tab.Navigator id="test" initialRouteName = "Home">
+        <Stack.Navigator>
+        <Tab.Navigator screenOptions={{
+          headerStyle: styles.headerStyle,  // Using header styles from StyleSheet
+          headerTintColor: styles.headerTintColor.color,  // Text color for header
+          headerTitleStyle: styles.headerTitleStyle,  // Title styling
+        }}>
           <Tab.Screen
               name="Home"
               children={(props) => <HomeScreen {...props} fbApp={fbApp} />}
@@ -79,9 +85,10 @@ export default function App() {
           <Tab.Screen
               name="Table"
               children={(props) => <TableRoom {...props} fbApp={fbApp} />}
-              options={{ headerShown: false }}
+              options={{ headerShown: true }}
           />
         </Tab.Navigator>
+        </Stack.Navigator>
       </NavigationContainer>
     </View>
   );
@@ -90,5 +97,20 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  screenContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  headerStyle: {
+    backgroundColor: '#9c6f44',  // Change header background color
+  },
+  headerTintColor: {
+    color: 'white',  // Text color in the header
+  },
+  headerTitleStyle: {
+    fontSize: 24,
+    fontWeight: 'bold',  // Custom title font style
   },
 });

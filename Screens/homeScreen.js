@@ -33,8 +33,6 @@ const HomePage = ({fbApp}) => {
             <View style={styles.homePageChild} >
             <Text>test</Text>
             </View>
-            
-            <Image style={styles.navigationBarIcon} resizeMode="cover" source="Navigation Bar.png" />
         </View>);
 };
 
@@ -196,7 +194,6 @@ const styles = StyleSheet.create({
     },
     icon: {
         height: "120%",
-        backgroundColor: "black",
         top: "20%"
     },
     wrapper: {
