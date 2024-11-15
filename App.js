@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Button, ScrollView } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, View } from 'react-native';
 import { initializeApp } from 'firebase/app';
-import { getAnalytics } from "firebase/analytics";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import { getFirestore, collection, query, where, getDocs } from "firebase/firestore";
 
 import LoginPage from './Screens/loginScreen';
 import SignUpPage from './Screens/signUpScreen';
@@ -14,7 +14,7 @@ import AudioPage from './Screens/audioScreen';
 import FriendsPage from './Screens/friendScreen';
 import TableRoom from './Screens/tableScreen';
 import SettingsPage from './Screens/settingScreen';
-
+import CreateTableScreen from './Screens/createTableScreen';
 
 const firebaseConfig = {
   apiKey: "AIzaSyAD-9qwFM9QtWA9_3ompqWnrCftJqzsPhU",
@@ -32,11 +32,37 @@ const fbApp = initializeApp(firebaseConfig);
 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userTable, setUserTable] = useState(null); // New state for user's table
 
-  const handleLogin = () => {
-    setIsLoggedIn(true); // User is logged in
-  };
-  
+  const auth = getAuth(fbApp);
+  const db = getFirestore(fbApp);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        setIsLoggedIn(true);
+        const uid = user.uid.toString();
+        // Fetch user data from Firestore to check their table
+        const Users = collection(db, 'Users');
+        const userQuery = query(Users, where("UID", "==", uid));
+        const querySnapshot = await getDocs(userQuery);
+        if (!querySnapshot.empty) {
+          const userDoc = querySnapshot.docs[0];
+          const userData = userDoc.data();
+          setUserTable(userData.Table); // Set the user table based on data
+          console.log(userData.Table);
+        } else {
+          console.log("No matching user found.");
+        }
+      } else {
+        setIsLoggedIn(false);
+        setUserTable(null); // Reset the table state when user logs out
+      }
+    });
+
+    return unsubscribe; // Clean up the listener on unmount
+  }, [auth, db]);
+
   if (!isLoggedIn) {
     // Show the login page if the user is not logged in
     return (
@@ -44,51 +70,54 @@ export default function App() {
         <Stack.Navigator>
           <Stack.Screen
             name="Login"
-            children={(props) => <LoginPage {...props} onLogin={handleLogin} fbApp={fbApp}/>}
+            children={(props) => <LoginPage {...props} />}
             options={{ headerShown: false }}
           />
           <Stack.Screen
             name="SignUp"
-            children={(props) => <SignUpPage {...props} fbApp={fbApp} />}
+            children={(props) => <SignUpPage {...props} />}
             options={{ headerShown: false }}
           />
         </Stack.Navigator>
       </NavigationContainer>
     );
   }
-
-
   return (
     <View style={styles.container}>
       <NavigationContainer>
-        <Stack.Navigator>
         <Tab.Navigator screenOptions={{
-          headerStyle: styles.headerStyle,  // Using header styles from StyleSheet
-          headerTintColor: styles.headerTintColor.color,  // Text color for header
-          headerTitleStyle: styles.headerTitleStyle,  // Title styling
+          headerStyle: styles.headerStyle,
+          headerTintColor: styles.headerTintColor.color,
+          headerTitleStyle: styles.headerTitleStyle,
         }}>
           <Tab.Screen
-              name="Home"
-              children={(props) => <HomeScreen {...props} fbApp={fbApp} />}
-              options={{ headerShown: false }}
+            name="Home"
+            children={(props) => <HomeScreen {...props} />}
+            options={{ headerShown: false }}
           />
           <Tab.Screen
-              name="Audio"
-              children={(props) => <AudioPage {...props} fbApp={fbApp} />}
-              options={{ headerShown: false }}
+            name="Audio"
+            children={(props) => <AudioPage {...props} />}
+            options={{ headerShown: false }}
           />
           <Tab.Screen
-              name="Friends"
-              children={(props) => <FriendsPage {...props} fbApp={fbApp} />}
-              options={{ headerShown: false }}
+            name="Friends"
+            children={(props) => <FriendsPage {...props} />}
+            options={{ headerShown: false }}
           />
           <Tab.Screen
-              name="Table"
-              children={(props) => <TableRoom {...props} fbApp={fbApp} />}
-              options={{ headerShown: true }}
+            name="Table"
+            children={userTable === "none" ? (props) => <CreateTableScreen {...props} /> : (props) => <TableRoom {...props} />}
+            options={{
+              headerShown: userTable !== "none", // Show header only when userTable is not "none"
+            }}
+          />
+          <Tab.Screen
+            name="Settings"
+            children={(props) => <SettingsPage {...props} />}
+            options={{ headerShown: false }}
           />
         </Tab.Navigator>
-        </Stack.Navigator>
       </NavigationContainer>
     </View>
   );
@@ -98,19 +127,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  screenContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   headerStyle: {
-    backgroundColor: '#9c6f44',  // Change header background color
+    backgroundColor: '#9c6f44',
   },
   headerTintColor: {
-    color: 'white',  // Text color in the header
+    color: 'white',
   },
   headerTitleStyle: {
     fontSize: 24,
-    fontWeight: 'bold',  // Custom title font style
+    fontWeight: 'bold',
   },
 });

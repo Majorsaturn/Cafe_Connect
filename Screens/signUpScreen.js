@@ -1,5 +1,5 @@
 import * as React from "react";
-import {Image, StyleSheet, Text, View, TextInput, TouchableOpacity} from "react-native";
+import {Image, StyleSheet, Text, View, TextInput, TouchableOpacity, ScrollView, KeyboardAvoidingView} from "react-native";
 import InsetShadow from 'react-native-inset-shadow';
 import { getAuth, createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { getFirestore, addDoc, collection } from "firebase/firestore";
@@ -58,7 +58,8 @@ const SignUpPage = ({navigation, fbApp}) => {
 				username: Username,
 				password: Password,
 				UID: user.uid,
-				Friends: []
+				Friends: [],
+				Table: "none" // 0 indicates not in a table
 			});
 			console.log("Document written with ID: ", docRef.id);
 	
@@ -82,7 +83,8 @@ const SignUpPage = ({navigation, fbApp}) => {
 	};
 
   	return (
-    		<View style={styles.signUpPage}>
+		<ScrollView>
+    		<KeyboardAvoidingView style={styles.signUpPage}>
       			<Image style={[styles.image2Icon]} resizeMode="cover" source={require("../assets/image_2.png")} />
       			<Text style={[styles.cafConnect]}>CAFÉ CONNECT</Text>
       			<View style={[styles.textField4, styles.textShadowBox]}>
@@ -204,7 +206,8 @@ const SignUpPage = ({navigation, fbApp}) => {
 						</View>
 					</InsetShadow>
 				</TouchableOpacity>
-    		</View>);
+    		</KeyboardAvoidingView>
+			</ScrollView>);
 };
 
 const styles = StyleSheet.create({
@@ -268,7 +271,7 @@ const styles = StyleSheet.create({
   	},
   	button: {
     		marginLeft: -106,
-    		top: "23%",
+    		top: "19%",
     		borderRadius: 100,
     		backgroundColor: "#000",
     		width: 209,
@@ -326,19 +329,19 @@ const styles = StyleSheet.create({
     		alignSelf: "stretch"
   	},
   	textField: {
-    		top: "17%"
+    		top: "14%"
   	},
   	textField2: {
-    		top: "20%"
+    		top: "17%"
   	},
   	textField4: {
-    		top: "5%"
+    		top: "2%"
   	},
   	textField6: {
-    		top: "8%"
+    		top: "5%"
   	},
   	textField8: {
-    		top: "11%"
+    		top: "8%"
   	},
   	stateLayer6: {
     		paddingHorizontal: 16,
@@ -348,18 +351,18 @@ const styles = StyleSheet.create({
     		flexDirection: "row"
   	},
   	textField10: {
-    		top: "14%"
+    		top: "11%"
   	},
   	signUpPage: {
     		backgroundColor: "#face8b",
     		width: "100%",
-    		height: 932,
+    		height: 735,
     		overflow: "hidden",
     		flex: 1
   	},
 	button1: {
 		marginLeft: -106,
-		top: "26%",
+		top: "20%",
 		borderRadius: 100,
 		backgroundColor: "#000",
 		width: 209,

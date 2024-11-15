@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, FlatList, Button, StyleSheet, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Platform, TouchableOpacity } from 'react-native';
-import { getFirestore, addDoc, collection, onSnapshot, query, orderBy, Timestamp } from "firebase/firestore";
+import React, { useState, useEffect, useRef } from 'react'; // Add useRef for managing FlatList reference
+import { View, Text, TextInput, FlatList, StyleSheet, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { getFirestore, addDoc, collection, doc, where, getDocs, onSnapshot, query, orderBy, Timestamp } from "firebase/firestore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { format } from 'date-fns';
 
 const TableRoom = ({ fbApp }) => {
   const auth = getAuth(fbApp);
@@ -10,79 +11,129 @@ const TableRoom = ({ fbApp }) => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const [loading, setLoading] = useState(true);
-  const [currentUser, setCurrentUser] = useState(null);  // Store the logged-in user
+  const [currentUser, setCurrentUser] = useState(null);
+  const [userTable, setUserTable] = useState(null);
 
-  // Set up listener to track auth state changes
+  const flatListRef = useRef(null); // Ref for FlatList
+
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setCurrentUser(user); // user will be null if not logged in
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        setCurrentUser(user);
+
+        try {
+          const usersRef = collection(db, 'Users');
+          const querySnapshot = await getDocs(query(usersRef, where("UID", "==", user.uid)));
+
+          if (!querySnapshot.empty) {
+            const userDoc = querySnapshot.docs[0];
+            const userData = userDoc.data();
+            setUserTable(userData.Table);
+          } else {
+            console.warn("No user document found for this Auth UID.");
+            setUserTable(null);
+          }
+        } catch (error) {
+          console.error("Error fetching user document:", error);
+        }
+      } else {
+        setCurrentUser(null);
+        setUserTable(null);
+      }
     });
 
     return () => unsubscribe();
-  }, [auth]);
+  }, [auth, db]);
 
   useEffect(() => {
-    const messagesRef = collection(db, 'Tables', 'Tedtable', 'messages');
+    if (!userTable) return;
+
+    const messagesRef = collection(db, 'Tables', userTable, 'messages');
     const messagesQuery = query(messagesRef, orderBy('timestamp'));
 
     const unsubscribe = onSnapshot(messagesQuery, (snapshot) => {
-      const newMessages = snapshot.docs.map(doc => doc.data());
+      const newMessages = snapshot.docs.map((doc) => doc.data());
       setMessages(newMessages);
       setLoading(false);
+
+      // Auto-scroll to bottom when new messages arrive
+      if (flatListRef.current) {
+        flatListRef.current.scrollToEnd({ animated: true });
+      }
     });
 
     return () => unsubscribe();
-  }, [db]);
+  }, [db, userTable]);
 
   const sendMessage = async () => {
-    if (newMessage.trim()) {
-      const sender = currentUser ? currentUser.displayName : 'Anonymous';  // Check if user is logged in
-
-      const messagesRef = collection(db, 'Tables', 'Tedtable', 'messages');
-      await addDoc(messagesRef, {
-        sender: sender,
-        text: newMessage,
-        timestamp: Timestamp.now(),  // Make sure this is a Firestore Timestamp
-      });
-      setNewMessage('');
+    if (newMessage.trim() && userTable) {
+      try {
+        const sender = currentUser ? currentUser.displayName || 'Anonymous' : 'Anonymous';
+        const messagesRef = collection(db, 'Tables', userTable, 'messages');
+        await addDoc(messagesRef, {
+          sender: sender,
+          text: newMessage,
+          timestamp: Timestamp.now(),
+        });
+        setNewMessage('');
+      } catch (error) {
+        console.error('Error sending message: ', error);
+      }
     }
   };
 
+  const renderItem = ({ item }) => (
+    <View style={styles.messageContainer}>
+      <View style={styles.headerRow}>
+        <Text style={styles.sender}>{item.sender}</Text>
+        {item.timestamp && (
+          <Text style={styles.timestamp}>{format(item.timestamp.toDate(), 'p, MMM d')}</Text>
+        )}
+      </View>
+      <Text style={styles.message}>{item.text}</Text>
+    </View>
+  );
+
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-    >
+    <KeyboardAvoidingView style={styles.container}>
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
         <View style={styles.innerContainer}>
           {loading ? (
-            <Text>Loading messages...</Text>
+            <ActivityIndicator size="large" color="#9c6f44" />
           ) : (
-            <FlatList
-              data={messages}
-              keyExtractor={(item, index) => index.toString()}
-              renderItem={({ item }) => (
-                <View style={styles.messageContainer}>
-                  <Text style={styles.sender}>{item.sender}:</Text>
-                  <Text style={styles.message}>{item.text}</Text>
-                </View>
+            <>
+              {messages.length === 0 ? (
+                <Text style={styles.noMessagesText}>No messages yet. Be the first to send one!</Text>
+              ) : (
+                <FlatList
+                  data={messages}
+                  ref={flatListRef} // Attach the ref here
+                  keyExtractor={(item, index) => index.toString()}
+                  renderItem={renderItem}
+                  contentContainerStyle={styles.messageList}
+                  onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: true })} // Auto-scroll on content change
+                  onLayout={() => flatListRef.current?.scrollToEnd({ animated: true })} // Auto-scroll on layout change
+                />
               )}
-              contentContainerStyle={styles.messageList}
-            />
+            </>
           )}
 
-          {/* Input field and send button */}
+          {!currentUser && (
+            <Text style={styles.authMessage}>Please log in to send messages.</Text>
+          )}
+
           <View style={styles.inputContainer}>
-            <TextInput 
-              value={newMessage} 
-              onChangeText={setNewMessage} 
-              placeholder="Type a message" 
+            <TextInput
+              value={newMessage}
+              onChangeText={setNewMessage}
+              placeholder="Type a message"
               style={styles.input}
               placeholderTextColor="#ffffff"
             />
             <TouchableOpacity
               style={styles.sendButton}
               onPress={sendMessage}
-              disabled={!currentUser}  // Disable if no user is logged in
+              disabled={!currentUser || !userTable}
             >
               <Text style={styles.sendButtonText}>Send</Text>
             </TouchableOpacity>
@@ -101,7 +152,7 @@ const styles = StyleSheet.create({
   innerContainer: {
     flex: 1,
     paddingLeft: 10,
-    justifyContent: 'flex-end', // Align content to the bottom
+    justifyContent: 'flex-end',
   },
   messageList: {
     flexGrow: 1,
@@ -109,31 +160,42 @@ const styles = StyleSheet.create({
   messageContainer: {
     marginBottom: 8,
   },
+  headerRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
   sender: {
     fontWeight: 'bold',
+    fontSize: 14,
+  },
+  timestamp: {
+    fontSize: 12,
+    color: '#666',
   },
   message: {
     fontSize: 16,
   },
   inputContainer: {
-    flexDirection: 'row',  // Align input and button in a row
-    alignItems: 'center',  // Vertically center the elements
+    flexDirection: 'row',
+    alignItems: 'center',
     marginTop: 10,
-    marginBottom: 10, // Space between messages and input field
+    marginBottom: 10,
   },
   input: {
-    flex: 1,  // Allow input to take up available space
+    flex: 1,
     borderWidth: 1,
     borderColor: '#fff',
     padding: 8,
-    marginRight: 10,  // Space between input and button
-    borderRadius: 20,  // Rounded corners for the input field
+    marginRight: 10,
+    borderRadius: 20,
     backgroundColor: "#9c6f44",
-    color: "#fff"
+    color: "#fff",
   },
   sendButton: {
     padding: 10,
-    borderRadius: 50,  // Make button circular
+    borderRadius: 50,
     backgroundColor: '#9c6f44',
   },
   sendButtonText: {

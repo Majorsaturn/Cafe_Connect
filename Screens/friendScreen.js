@@ -113,7 +113,8 @@ const FriendsPage = () => {
       			<Pressable style={[styles.profileIcon, styles.menuItemLayout]} onPress={()=>{}}>
         				<Image style={styles.icon} resizeMode="cover" source="profile icon.png" />
       			</Pressable>
-    		</View>);
+    		</View>
+			);
 };
 
 const styles = StyleSheet.create({
