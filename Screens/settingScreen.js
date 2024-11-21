@@ -1,80 +1,68 @@
 import * as React from "react";
-import {Image, StyleSheet, Text, View, Pressable} from "react-native";
+import {Image, StyleSheet, Text, View, Pressable, TouchableOpacity,} from "react-native";
+import { getAuth, signOut } from "firebase/auth";
 
-const SettingsPage = () => {
+const SettingsPage = ({ navigation, fbApp }) => {
+
+	const auth = getAuth(fbApp);
+
+	const handleLogout = async () => {
+	  try {
+		await signOut(auth); // Logs the user out of Firebase
+	  } catch (error) {
+		console.error("Error logging out:", error.message);
+	  }
+	};
+
+	const handleEditPress = async () => {
+		navigation.navigate('EditAccountDetails');
+	}
   	
   	return (
     		<View style={[styles.settingsPage, styles.iconLayout1]}>
-      			<Image style={styles.image5Icon} resizeMode="cover" source="image 5.png" />
-      			<Text style={[styles.settings, styles.audioTypo]}>SETTINGS</Text>
-      			<Text style={[styles.audio, styles.audioTypo]}>AUDIO</Text>
+      			<Image style={styles.image5Icon} resizeMode="cover" source={require("../assets/image 5.png")} />
+      			<Text style={[styles.settings]}>SETTINGS</Text>
+				<Pressable style={[styles.button2, styles.buttonFlexBox]} onPress={handleEditPress}>
+        				<Text style={[styles.darkMode, styles.darkModeLayout]}>Edit Account Details</Text>
+        				<Image style={styles.moreThanIcon} resizeMode="cover" source={require("../assets/More Than.png")} />
+      			</Pressable>
       			<View style={[styles.button, styles.buttonLayout]}>
         				<View style={[styles.toggleSwitch, styles.toggleLayout]}>
           					<View style={[styles.toggleSwitchInner, styles.inputFlexBox]}>
-            						<Image style={styles.frameChild} resizeMode="cover" source="Ellipse 1.png" />
+            						<Image style={styles.frameChild} resizeMode="cover" source={require("../assets/Ellipse 2.png")} />
           					</View>
         				</View>
-        				<Image style={[styles.starIcon, styles.iconLayout]} resizeMode="cover" source="Star.png" />
-        				<Image style={[styles.xIcon, styles.iconLayout]} resizeMode="cover" source="X.png" />
         				<Text style={[styles.notifications, styles.darkModeLayout]}>Notifications</Text>
       			</View>
       			<View style={[styles.button1, styles.buttonLayout]}>
-        				<Image style={[styles.starIcon1, styles.iconLayout]} resizeMode="cover" source="Star.png" />
-        				<Image style={[styles.starIcon, styles.iconLayout]} resizeMode="cover" source="X.png" />
         				<Text style={[styles.darkMode, styles.darkModeLayout]}>Dark Mode</Text>
         				<View style={[styles.toggleSwitch1, styles.toggleLayout]}>
           					<View style={[styles.toggleSwitchInner, styles.inputFlexBox]}>
-            						<Image style={styles.frameChild} resizeMode="cover" source="Ellipse 1.png" />
+            						<Image style={styles.frameChild} resizeMode="cover" source={require("../assets/Ellipse 2.png")} />
           					</View>
         				</View>
       			</View>
-      			<Pressable style={[styles.button2, styles.buttonFlexBox]} onPress={()=>{}}>
-        				<Image style={[styles.starIcon1, styles.iconLayout]} resizeMode="cover" source="Star.png" />
-        				<Image style={[styles.starIcon, styles.iconLayout]} resizeMode="cover" source="X.png" />
-        				<Text style={[styles.darkMode, styles.darkModeLayout]}>Edit Account Details</Text>
-        				<Image style={styles.moreThanIcon} resizeMode="cover" source="More Than.png" />
-      			</Pressable>
       			<Pressable style={[styles.button3, styles.buttonFlexBox]} onPress={()=>{}}>
-        				<Image style={[styles.starIcon1, styles.iconLayout]} resizeMode="cover" source="Star.png" />
-        				<Image style={[styles.starIcon, styles.iconLayout]} resizeMode="cover" source="X.png" />
         				<Text style={[styles.darkMode, styles.darkModeLayout]}>User Support</Text>
-        				<Image style={styles.moreThanIcon} resizeMode="cover" source="More Than.png" />
+        				<Image style={styles.moreThanIcon} resizeMode="cover" source={require("../assets/More Than.png")} />
       			</Pressable>
       			<Pressable style={[styles.button4, styles.buttonFlexBox]} onPress={()=>{}}>
-        				<Image style={[styles.starIcon1, styles.iconLayout]} resizeMode="cover" source="Star.png" />
-        				<Image style={[styles.starIcon, styles.iconLayout]} resizeMode="cover" source="X.png" />
         				<Text style={[styles.darkMode, styles.darkModeLayout]}>About</Text>
-        				<Image style={styles.moreThanIcon} resizeMode="cover" source="More Than.png" />
+        				<Image style={styles.moreThanIcon} resizeMode="cover" source={require("../assets/More Than.png")} />
       			</Pressable>
-      			<View style={[styles.inputField, styles.inputPosition]}>
-        				<Text style={[styles.description, styles.errorTypo]}>Description</Text>
-        				<View style={styles.inputFieldChild} />
-        				<Text style={[styles.error, styles.errorTypo]}>Error</Text>
-        				<View style={[styles.input, styles.inputFlexBox]}>
-          					<Text style={[styles.currentActiveInput, styles.currentTypo]}>Current active input device</Text>
-        				</View>
-        				<Image style={[styles.expandArrowIcon, styles.button5Layout]} resizeMode="cover" source="Expand Arrow.png" />
-        				<Text style={[styles.inputDevice, styles.labelTextClr]}>Input Device</Text>
-      			</View>
-      			<View style={[styles.inputField1, styles.inputPosition]}>
-        				<Text style={[styles.description, styles.errorTypo]}>Description</Text>
-        				<View style={styles.inputFieldChild} />
-        				<Text style={[styles.error, styles.errorTypo]}>Error</Text>
-        				<View style={[styles.input, styles.inputFlexBox]}>
-          					<Text style={[styles.currentActiveOutput, styles.currentTypo]}>Current active output device</Text>
-        				</View>
-        				<Image style={[styles.expandArrowIcon, styles.button5Layout]} resizeMode="cover" source="Expand Arrow.png" />
-        				<Text style={[styles.inputDevice, styles.labelTextClr]}>Output Device</Text>
-      			</View>
-      			<Pressable style={[styles.button5, styles.button5Layout]} onPress={()=>{}}>
-        				<View style={[styles.stateLayer, styles.buttonFlexBox]}>
-          					<Image style={styles.logoutIcon} resizeMode="cover" source="Logout.png" />
-          					<Text style={[styles.labelText, styles.labelTextClr]}>LOGOUT</Text>
-        				</View>
-      			</Pressable>
-      			<Pressable style={styles.arrowLeft} onPress={()=>{}}>
-        				<Image style={[styles.icon, styles.iconLayout1]} resizeMode="cover" source="Arrow left.png" />
-      			</Pressable>
+      			<TouchableOpacity
+        			style={[styles.button5, styles.button5Layout]}
+        			onPress={handleLogout}
+      			>
+        			<View style={[styles.stateLayer, styles.buttonFlexBox]}>
+          			<Text style={[styles.labelText, styles.labelTextClr]}>LOGOUT</Text>
+          			<Image
+            			style={styles.logoutIcon}
+            			resizeMode="cover"
+            			source={require("../assets/Logout.png")}
+          			/>
+        			</View>
+      			</TouchableOpacity>
     		</View>);
 };
 
@@ -97,13 +85,13 @@ const styles = StyleSheet.create({
     		borderColor: "#2c2c2c",
     		gap: 8,
     		flexDirection: "row",
-    		width: 395,
+    		width: 325,
     		borderWidth: 1,
     		borderStyle: "solid",
     		backgroundColor: "#2c2c2c",
     		borderRadius: 8,
     		left: 19,
-    		position: "absolute",
+    		position: "relative",
     		overflow: "hidden"
   	},
   	toggleLayout: {
@@ -159,27 +147,28 @@ const styles = StyleSheet.create({
     		flex: 1
   	},
   	button5Layout: {
-    		height: 36,
-    		position: "absolute"
+    		position: "relative"
   	},
   	labelTextClr: {
     		color: "#fff",
-    		position: "absolute"
+    		position: "relative"
   	},
   	image5Icon: {
-    		top: -50,
-    		left: -947,
-    		width: 2485,
-    		height: 1042,
-    		opacity: 0.13,
+    		opacity: 1,
     		position: "absolute"
   	},
   	settings: {
-    		marginLeft: -84,
-    		top: 69,
-    		fontSize: 36,
-    		width: 168,
-    		height: 43
+		marginLeft: -80,
+        top: "12%",
+        fontSize: 36,
+        fontWeight: "700",
+        fontFamily: "JosefinSlab-Bold",
+        color: "#000",
+        width: 322,
+        height: "6%",
+        textAlign: "left",
+        left: "50%",
+        position: "relative"
   	},
   	audio: {
     		marginLeft: -190,
@@ -215,7 +204,7 @@ const styles = StyleSheet.create({
     		zIndex: 3
   	},
   	button: {
-    		top: 243,
+    		top: "35%",
     		gap: 8,
     		justifyContent: "flex-end",
     		padding: 12,
@@ -235,7 +224,7 @@ const styles = StyleSheet.create({
     		padding: 4
   	},
   	button1: {
-    		top: 322,
+    		top: "40%",
     		gap: 8,
     		justifyContent: "flex-end",
     		padding: 12,
@@ -244,61 +233,58 @@ const styles = StyleSheet.create({
     		borderColor: "#2c2c2c"
   	},
   	moreThanIcon: {
-    		top: 16,
-    		left: 357,
-    		width: 20,
-    		height: 25,
-    		zIndex: 3,
-    		position: "absolute"
+			left: "450%",
+    		zIndex: 0,
+			padding: 4
   	},
   	button2: {
-    		top: 164,
+    		top: "30%",
     		gap: 8,
     		padding: 12,
     		height: 56,
     		borderColor: "#2c2c2c",
     		flexDirection: "row",
-    		width: 395,
+    		width: 325,
     		borderWidth: 1,
     		borderStyle: "solid",
     		backgroundColor: "#2c2c2c",
     		borderRadius: 8,
     		left: 19,
-    		position: "absolute",
+    		position: "relative",
     		overflow: "hidden",
     		justifyContent: "center"
   	},
   	button3: {
-    		top: 401,
+    		top: "45%",
     		gap: 8,
     		padding: 12,
     		height: 56,
     		borderColor: "#2c2c2c",
     		flexDirection: "row",
-    		width: 395,
+    		width: 325,
     		borderWidth: 1,
     		borderStyle: "solid",
     		backgroundColor: "#2c2c2c",
     		borderRadius: 8,
     		left: 19,
-    		position: "absolute",
+    		position: "relative",
     		overflow: "hidden",
     		justifyContent: "center"
   	},
   	button4: {
-    		top: 480,
+    		top: "50%",
     		gap: 8,
     		padding: 12,
     		height: 56,
     		borderColor: "#2c2c2c",
     		flexDirection: "row",
-    		width: 395,
+    		width: 325,
     		borderWidth: 1,
     		borderStyle: "solid",
     		backgroundColor: "#2c2c2c",
     		borderRadius: 8,
     		left: 19,
-    		position: "absolute",
+    		position: "relative",
     		overflow: "hidden",
     		justifyContent: "center"
   	},
@@ -370,24 +356,21 @@ const styles = StyleSheet.create({
     		gap: 8
   	},
   	logoutIcon: {
-    		top: 8,
-    		left: 85,
+			top: "-1%",
     		width: 18,
     		height: 18,
     		zIndex: 0,
-    		position: "absolute"
+    		position: "relative"
   	},
   	labelText: {
-    		marginTop: -10,
-    		top: "50%",
-    		fontSize: 14,
+			top: "-2%",
+    		fontSize: 16,
     		letterSpacing: 0,
     		lineHeight: 20,
     		fontWeight: "500",
     		fontFamily: "Roboto-Medium",
     		textAlign: "center",
     		zIndex: 1,
-    		left: 19
   	},
   	stateLayer: {
     		backgroundColor: "#9c6f44",
@@ -397,25 +380,19 @@ const styles = StyleSheet.create({
     		gap: 8,
     		flexDirection: "row",
     		justifyContent: "center",
+    		alignItems: "center",
     		flex: 1
   	},
   	button5: {
-    		marginLeft: -61,
-    		top: 759,
-    		shadowColor: "rgba(0, 0, 0, 0.25)",
-    		shadowOffset: {
-      			width: 0,
-      			height: 4
-    		},
-    		shadowRadius: 4,
+    		top: "35%",
     		elevation: 4,
     		shadowOpacity: 1,
     		backgroundColor: "#000",
-    		width: 122,
+    		width: "50%",
     		justifyContent: "center",
     		alignItems: "center",
     		borderRadius: 100,
-    		left: "50%",
+    		left: "26%",
     		height: 36,
     		overflow: "hidden"
   	},

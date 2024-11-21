@@ -7,6 +7,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { getFirestore, collection, query, where, getDocs } from "firebase/firestore";
 
+import EditAccountDetails from './Screens/editAccountScreen';
 import LoginPage from './Screens/loginScreen';
 import SignUpPage from './Screens/signUpScreen';
 import HomeScreen from './Screens/homeScreen';
@@ -85,39 +86,54 @@ export default function App() {
   return (
     <View style={styles.container}>
       <NavigationContainer>
-        <Tab.Navigator screenOptions={{
-          headerStyle: styles.headerStyle,
-          headerTintColor: styles.headerTintColor.color,
-          headerTitleStyle: styles.headerTitleStyle,
-        }}>
-          <Tab.Screen
-            name="Home"
-            children={(props) => <HomeScreen {...props} />}
-            options={{ headerShown: false }}
+        <Stack.Navigator screenOptions={{
+                headerStyle: styles.headerStyle,
+                headerTintColor: styles.headerTintColor.color,
+                headerTitleStyle: styles.headerTitleStyle,
+              }}>
+          <Stack.Screen name="Main" options={{ headerShown: false }}>
+            {() => (
+              <Tab.Navigator screenOptions={{
+                headerStyle: styles.headerStyle,
+                headerTintColor: styles.headerTintColor.color,
+                headerTitleStyle: styles.headerTitleStyle,
+              }}>
+                <Tab.Screen
+                  name="Home"
+                  children={(props) => <HomeScreen {...props} />}
+                  options={{ headerShown: false }}
+                />
+                <Tab.Screen
+                  name="Audio"
+                  children={(props) => <AudioPage {...props} />}
+                  options={{ headerShown: false }}
+                />
+                <Tab.Screen
+                  name="Friends"
+                  children={(props) => <FriendsPage {...props} />}
+                  options={{ headerShown: false }}
+                />
+                <Tab.Screen
+                  name="Table"
+                  children={userTable === "none" ? (props) => <CreateTableScreen {...props} /> : (props) => <TableRoom {...props} />}
+                  options={{
+                    headerShown: userTable !== "none",
+                  }}
+                />
+                <Tab.Screen
+                  name="Settings"
+                  children={(props) => <SettingsPage {...props} />}
+                  options={{ headerShown: false }}
+                />
+              </Tab.Navigator>
+            )}
+          </Stack.Screen>
+          <Stack.Screen
+            name="EditAccountDetails"
+            children={(props) => <EditAccountDetails {...props} />}
+            options={{ title: "" }}
           />
-          <Tab.Screen
-            name="Audio"
-            children={(props) => <AudioPage {...props} />}
-            options={{ headerShown: false }}
-          />
-          <Tab.Screen
-            name="Friends"
-            children={(props) => <FriendsPage {...props} />}
-            options={{ headerShown: false }}
-          />
-          <Tab.Screen
-            name="Table"
-            children={userTable === "none" ? (props) => <CreateTableScreen {...props} /> : (props) => <TableRoom {...props} />}
-            options={{
-              headerShown: userTable !== "none", // Show header only when userTable is not "none"
-            }}
-          />
-          <Tab.Screen
-            name="Settings"
-            children={(props) => <SettingsPage {...props} />}
-            options={{ headerShown: false }}
-          />
-        </Tab.Navigator>
+        </Stack.Navigator>
       </NavigationContainer>
     </View>
   );

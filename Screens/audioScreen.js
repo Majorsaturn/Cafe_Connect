@@ -6,90 +6,19 @@ const AudioScreen = ({fbApp}) => {
 
     return (
         <View style={styles.audioPage}>
-            <Image style={styles.image5Icon} resizeMode="cover" source="image 5.png" />
+            <Image style={styles.image5Icon} resizeMode="cover" source={require("../assets/image 5.png")} />
+            <Image style={styles.profileIcon} resizeMode="cover" source={require("../assets/profile icon.png")} />
             <Text style={styles.ambientSounds}>AMBIENT SOUNDS</Text>
             <View style={[styles.menuParent, styles.menuLayout]}>
                 <View style={[styles.menu, styles.menuPosition]}>
-                    <View style={[styles.menuHeader, styles.menuFlexBox]}>
-                        <Text style={[styles.heading, styles.descriptionTypo]}>COFFEE YEAHHHH</Text>
-                        <Text style={[styles.heading1, styles.aClr]}>Heading</Text>
-                    </View>
                     <View style={[styles.menuSeparator, styles.menuSpaceBlock]}>
                         <View style={[styles.rule, styles.ruleLayout]} />
                     </View>
-                    <View style={styles.menuSection}>
-                        <View style={[styles.menuItem, styles.menuItemSpaceBlock]}>
-                            <View style={styles.play} />
-                            <View style={styles.body}>
-                                <View style={[styles.row, styles.rowFlexBox]}>
-                                    <Text style={[styles.label, styles.aClr]}>Café Calm</Text>
-                                </View>
-                                <Text style={[styles.description, styles.aClr]}>Relax with the calming background ambiance of your favorite café</Text>
-                            </View>
-                        </View>
-                        <View style={[styles.menuItem, styles.menuItemSpaceBlock]}>
-                            <View style={styles.play} />
-                            <View style={styles.body}>
-                                <View style={[styles.row, styles.rowFlexBox]}>
-                                    <Text style={[styles.label, styles.aClr]}>Bistro Buzz</Text>
-                                </View>
-                                <Text style={[styles.description, styles.aClr]}>Let the buzz of the bistro brew in your ears</Text>
-                            </View>
-                        </View>
-                        <View style={[styles.menuItem, styles.menuItemSpaceBlock]}>
-                            <View style={styles.play} />
-                            <View style={styles.body}>
-                                <View style={[styles.row, styles.rowFlexBox]}>
-                                    <Text style={[styles.label, styles.aClr]}>Coffeehouse Chatter</Text>
-                                </View>
-                                <Text style={[styles.description, styles.aClr]}>The gentle hum of conversations and clinking cups</Text>
-                            </View>
-                        </View>
-                        <View style={[styles.menuItem, styles.menuItemSpaceBlock]}>
-                            <View style={styles.play} />
-                            <View style={styles.body}>
-                                <View style={[styles.row, styles.rowFlexBox]}>
-                                    <Text style={[styles.label, styles.aClr]}>Sip Serenity</Text>
-                                </View>
-                                <Text style={[styles.description, styles.aClr]}>A tranquil blend of quiet sipping and soft music</Text>
-                            </View>
-                        </View>
-                    </View>
-                    <View style={[styles.menuSection1, styles.menuFlexBox]}>
-                        <View style={[styles.menuItem, styles.menuItemSpaceBlock]}>
-                            <Image style={styles.play} resizeMode="cover" source="Star.png" />
-                            <View style={styles.body}>
-                                <View style={[styles.row, styles.rowFlexBox]}>
-                                    <Text style={[styles.label, styles.aClr]}>Menu Label</Text>
-                                    <View style={[styles.menuShortcut, styles.rowFlexBox]}>
-                                        <Text style={[styles.a, styles.aClr]}>⇧A</Text>
-                                    </View>
-                                </View>
-                                <Text style={[styles.description4, styles.descriptionTypo]}>Menu description.</Text>
-                            </View>
-                        </View>
-                        <View style={[styles.menuItem5, styles.menuItemSpaceBlock]}>
-                            <Image style={styles.play} resizeMode="cover" source="Star.png" />
-                            <View style={styles.body}>
-                                <View style={[styles.row, styles.rowFlexBox]}>
-                                    <Text style={[styles.label, styles.aClr]}>Menu Label</Text>
-                                    <View style={[styles.menuShortcut, styles.rowFlexBox]}>
-                                        <Text style={[styles.a, styles.aClr]}>⇧A</Text>
-                                    </View>
-                                </View>
-                                <Text style={[styles.description4, styles.descriptionTypo]}>Menu description.</Text>
-                            </View>
-                        </View>
-                    </View>
+                    
                     <View style={[styles.menuSeparator1, styles.menuSpaceBlock]}>
                         <View style={[styles.rule1, styles.ruleLayout]} />
                     </View>
-                    <Image style={[styles.iconPlay, styles.iconLayout]} resizeMode="cover" source={`🦆 icon "play".png`} />
                 </View>
-                <Image style={[styles.iconPlay1, styles.iconLayout]} resizeMode="cover" source={`🦆 icon "play".png`} />
-                <Image style={[styles.iconPlay2, styles.iconLayout]} resizeMode="cover" source={`🦆 icon "play".png`} />
-                <Image style={[styles.iconPlay3, styles.iconLayout]} resizeMode="cover" source={`🦆 icon "play".png`} />
-                <Image style={[styles.iconPremium, styles.iconLayout]} resizeMode="cover" source={`🦆 icon "Premium".png`} />
                 <View style={[styles.mediaPlayerParent, styles.image1IconLayout]}>
                     <View style={styles.mediaPlayer}>
                         <Image style={[styles.solarskipNextOutlineIcon, styles.outlineIconLayout]} resizeMode="cover" source="solar:skip-next-outline.png" />
@@ -100,16 +29,15 @@ const AudioScreen = ({fbApp}) => {
                     <Image style={styles.image1Icon1} resizeMode="cover" source="image 1.png" />
                 </View>
             </View>
-            <Image style={styles.navigationBarIcon} resizeMode="cover" source="Navigation Bar.png" />
-            <Image style={styles.profileIcon} resizeMode="cover" source="profile icon.png" />
+            
         </View>);
 };
 
 const styles = StyleSheet.create({
     menuLayout: {
-        height: 679,
-        width: 401,
-        position: "absolute"
+        height: 200,
+        width: "35%",
+        position: "relative"
     },
     menuPosition: {
         top: 0,
@@ -167,25 +95,23 @@ const styles = StyleSheet.create({
         overflow: "hidden"
     },
     image5Icon: {
-        top: -50,
-        left: -947,
-        width: 2485,
-        height: 1042,
-        opacity: 0.13,
+        top: 0,
+        left: 0,
+        opacity: 1,
         position: "absolute"
     },
     ambientSounds: {
         marginLeft: -161,
-        top: 69,
+        top: "5%",
         fontSize: 36,
         fontWeight: "700",
         fontFamily: "JosefinSlab-Bold",
         color: "#000",
         width: 322,
-        height: 30,
+        height: "6%",
         textAlign: "left",
         left: "50%",
-        position: "absolute"
+        position: "relative"
     },
     heading: {
         color: "#f3f3f3",
@@ -312,9 +238,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         padding: 8,
         borderRadius: 8,
-        height: 679,
-        width: 401,
-        position: "absolute",
+        position: "relative",
         overflow: "hidden"
     },
     iconPlay1: {
@@ -392,9 +316,9 @@ const styles = StyleSheet.create({
         height: 289
     },
     menuParent: {
-        marginLeft: -200,
-        top: 130,
-        left: "50%"
+        marginLeft: 0,
+        top: "10%",
+        left: "43%"
     },
     navigationBarIcon: {
         top: 862,
@@ -404,16 +328,14 @@ const styles = StyleSheet.create({
         position: "absolute"
     },
     profileIcon: {
-        top: 13,
+        top: "5%",
         left: 12,
-        width: 46,
-        height: 46,
-        position: "absolute"
+        position: "relative"
     },
     audioPage: {
         backgroundColor: "#face8b",
         width: "100%",
-        height: 932,
+        height: "100%",
         overflow: "hidden",
         flex: 1
     }
