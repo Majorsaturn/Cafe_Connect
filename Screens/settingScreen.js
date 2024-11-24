@@ -17,6 +17,10 @@ const SettingsPage = ({ navigation, fbApp }) => {
 	const handleEditPress = async () => {
 		navigation.navigate('EditAccountDetails');
 	}
+
+	const handleAboutPress = async () => {
+		navigation.navigate('About');
+	}
   	
   	return (
     		<View style={[styles.settingsPage, styles.iconLayout1]}>
@@ -46,7 +50,7 @@ const SettingsPage = ({ navigation, fbApp }) => {
         				<Text style={[styles.darkMode, styles.darkModeLayout]}>User Support</Text>
         				<Image style={styles.moreThanIcon} resizeMode="cover" source={require("../assets/More Than.png")} />
       			</Pressable>
-      			<Pressable style={[styles.button4, styles.buttonFlexBox]} onPress={()=>{}}>
+      			<Pressable style={[styles.button4, styles.buttonFlexBox]} onPress={handleAboutPress}>
         				<Text style={[styles.darkMode, styles.darkModeLayout]}>About</Text>
         				<Image style={styles.moreThanIcon} resizeMode="cover" source={require("../assets/More Than.png")} />
       			</Pressable>
