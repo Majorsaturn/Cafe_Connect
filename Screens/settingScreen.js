@@ -21,6 +21,10 @@ const SettingsPage = ({ navigation, fbApp }) => {
 	const handleAboutPress = async () => {
 		navigation.navigate('About');
 	}
+
+	const handleSupportPress = async () => {
+		navigation.navigate('Support');
+	}
   	
   	return (
     		<View style={[styles.settingsPage, styles.iconLayout1]}>
@@ -46,7 +50,7 @@ const SettingsPage = ({ navigation, fbApp }) => {
           					</View>
         				</View>
       			</View>
-      			<Pressable style={[styles.button3, styles.buttonFlexBox]} onPress={()=>{}}>
+      			<Pressable style={[styles.button3, styles.buttonFlexBox]} onPress={handleSupportPress}>
         				<Text style={[styles.darkMode, styles.darkModeLayout]}>User Support</Text>
         				<Image style={styles.moreThanIcon} resizeMode="cover" source={require("../assets/More Than.png")} />
       			</Pressable>

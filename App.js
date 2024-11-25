@@ -17,6 +17,7 @@ import TableRoom from './Screens/tableScreen';
 import SettingsPage from './Screens/settingScreen';
 import CreateTableScreen from './Screens/createTableScreen';
 import AboutScreen from './Screens/aboutScreen';
+import SupportPage from './Screens/supportScreen'
 
 const firebaseConfig = {
   apiKey: "AIzaSyAD-9qwFM9QtWA9_3ompqWnrCftJqzsPhU",
@@ -132,6 +133,11 @@ export default function App() {
           <Stack.Screen
             name="EditAccountDetails"
             children={(props) => <EditAccountDetails {...props} />}
+            options={{ title: "" }}
+          />
+          <Stack.Screen
+            name="Support"
+            children={(props) => <SupportPage {...props} />}
             options={{ title: "" }}
           />
           <Stack.Screen
