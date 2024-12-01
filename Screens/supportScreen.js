@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
     		overflow: "hidden"
   	},
 	cafConnect: {
-		marginLeft: -130,
+		marginLeft: -80,
 		top: "2%",
 		fontSize: 36,
 		fontWeight: "300",
