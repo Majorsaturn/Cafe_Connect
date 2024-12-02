@@ -28,10 +28,10 @@ const HomePage = ({fbApp}) => {
                 </View>
             </View>
             <View style={styles.homePageItem} >
-            <Text>test</Text>
+            <Text></Text>
             </View>
             <View style={styles.homePageChild} >
-            <Text>test</Text>
+            <Text></Text>
             </View>
         </View>);
 };

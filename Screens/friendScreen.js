@@ -1,8 +1,26 @@
-import * as React from "react";
-import {Image, StyleSheet, Text, View} from "react-native";
+import React, { useEffect, useState } from "react";
+import { Image, StyleSheet, Text, View, FlatList, TouchableOpacity } from "react-native";
 import { useFonts, Roboto_500Medium, Roboto_400Regular } from '@expo-google-fonts/roboto';
+import { getFirestore, doc, getDoc } from "firebase/firestore";
 
-const AudioScreen = ({fbApp}) => {
+const AudioScreen = ({ fbApp }) => {
+    const [friends, setFriends] = useState([]);
+
+    useEffect(() => {
+        const fetchFriends = async () => {
+            const db = getFirestore(fbApp); // Access Firestore instance
+            const userDocRef = doc(db, "Users", "ly2VyY3yQrjy9aPmv7ih"); // Replace with dynamic UID if needed
+            const userDoc = await getDoc(userDocRef);
+
+            if (userDoc.exists()) {
+                setFriends(userDoc.data().Friends || []); // Safely access the Friends array
+            } else {
+                console.error("No such document!");
+            }
+        };
+
+        fetchFriends();
+    }, [fbApp]);
 
     return (
         <View style={styles.audioPage}>
@@ -12,25 +30,24 @@ const AudioScreen = ({fbApp}) => {
             <View style={[styles.menuParent, styles.menuLayout]}>
                 <View style={[styles.menu, styles.menuPosition]}>
                     <View style={[styles.menuSeparator, styles.menuSpaceBlock]}>
-                        <View style={[styles.rule, styles.ruleLayout]} />
+                    <View style={[styles.rule, styles.ruleLayout]} />
+                        <FlatList
+                        data={friends}
+                        keyExtractor={(item, index) => index.toString()} // Unique key for each item
+                        renderItem={({ item }) => (
+                        <TouchableOpacity style={styles.friendItem}>
+                        <Text style={styles.friendText}>{item}</Text>
+                        </TouchableOpacity>
+                        )}
+                        contentContainerStyle={styles.friendList}
+                        />
+                    <View style={[styles.rule, styles.ruleLayout]} />
                     </View>
                     
-                    <View style={[styles.menuSeparator1, styles.menuSpaceBlock]}>
-                        <View style={[styles.rule1, styles.ruleLayout]} />
-                    </View>
-                </View>
-                <View style={[styles.mediaPlayerParent, styles.image1IconLayout]}>
-                    <View style={styles.mediaPlayer}>
-                        <Image style={[styles.solarskipNextOutlineIcon, styles.outlineIconLayout]} resizeMode="cover" source="solar:skip-next-outline.png" />
-                        <Image style={[styles.solarplayOutlineIcon, styles.outlineIconLayout]} resizeMode="cover" source="solar:play-outline.png" />
-                        <Image style={[styles.solarskipPreviousOutlineIcon, styles.outlineIconLayout]} resizeMode="cover" source="solar:skip-previous-outline.png" />
-                    </View>
-                    <Image style={[styles.image1Icon, styles.image1IconLayout]} resizeMode="cover" source="image 1.png" />
-                    <Image style={styles.image1Icon1} resizeMode="cover" source="image 1.png" />
                 </View>
             </View>
-            
-        </View>);
+        </View>
+    );
 };
 
 const styles = StyleSheet.create({
@@ -138,9 +155,9 @@ const styles = StyleSheet.create({
         alignSelf: "stretch"
     },
     menuSeparator: {
-        justifyContent: "center",
+        justifyContent: "left",
         zIndex: 1,
-        alignItems: "center",
+        alignItems: "left",
         paddingVertical: 8,
         alignSelf: "stretch"
     },
@@ -338,7 +355,26 @@ const styles = StyleSheet.create({
         height: "100%",
         overflow: "hidden",
         flex: 1
-    }
+    },
+    friendList: { 
+        paddingVertical: 10,
+        position: "relative",
+
+    },
+    friendText: { 
+        fontSize: 18, 
+        paddingVertical: 5, 
+        color: "black" 
+    },
+    friendItem: {
+        backgroundColor: "#face8b", // Light background color for the border
+        paddingHorizontal: 15,
+        paddingVertical: 8,
+        marginVertical: 5,
+        borderRadius: 20, // Makes the border rounded
+        alignItems: "center",
+        justifyContent: "center",
+    },
 });
 
 export default AudioScreen;
