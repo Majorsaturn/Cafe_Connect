@@ -1,5 +1,5 @@
 import * as React from "react";
-import {Image, StyleSheet, Text, View, TouchableOpacity, TextInput} from "react-native";
+import {Image, StyleSheet, Text, View, TouchableOpacity, TextInput, ActivityIndicator} from "react-native";
 import InsetShadow from 'react-native-inset-shadow';
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { useFonts, Roboto_500Medium, Roboto_400Regular } from '@expo-google-fonts/roboto';
@@ -33,6 +33,16 @@ const LoginPage = ({navigation, onLogin, fbApp}) => {
 	const handleSignUpPress = async () => {
 		navigation.navigate('SignUp');
 	}
+
+	// Show a loading indicator until the fonts are loaded
+	if (!fontsLoaded) {
+		return (
+			<View style={[styles.loginPage, styles.centered]}>
+				<ActivityIndicator size="large" color="#9c6f44" />
+			</View>
+		);
+	}
+
   	return (
     		<View style={styles.loginPage}>
       			<Image style={styles.image2Icon} resizeMode="cover" source={require("../assets/image_2.png")} />
@@ -323,18 +333,22 @@ const styles = StyleSheet.create({
 			marginLeft: -105,
     		top: "6%",
   	},
-  	loginPage: {
-    		backgroundColor: "#face8b",
-    		height: "100%",
-    		width: "100%",
-    		flex: 1,
-			position: "relative",
-  	},
 	ssoBox: {
 		flexDirection: "row",
 		top: "20%",
 		left: "8.2%"
-	}
+	},
+	loginPage: {
+		backgroundColor: "#face8b",
+		height: "100%",
+		width: "100%",
+		flex: 1,
+		position: "relative",
+  	},
+	centered: {
+        justifyContent: "center",
+        alignItems: "center",
+    },
 });
 
 export default LoginPage;

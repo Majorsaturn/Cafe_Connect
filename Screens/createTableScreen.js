@@ -1,5 +1,5 @@
 import * as React from "react";
-import { View, Text, TextInput, ScrollView, Image, StyleSheet, KeyboardAvoidingView, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, ScrollView, Image, StyleSheet, KeyboardAvoidingView, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { getFirestore, addDoc, updateDoc, collection, doc, where, getDocs, query } from "firebase/firestore";
 import { useFonts, Roboto_500Medium, Roboto_400Regular } from '@expo-google-fonts/roboto';
@@ -61,7 +61,7 @@ const CreateTableScreen = ({ updateUserTableName, updateUserTable, fbApp}) => {
     const joinTable = async () => {
         onAuthStateChanged(auth, async (user) => {
         if (!user) {
-          console.error("No user is logged in.");
+          console.log("No user is logged in.");
           return; // Return early if no user is logged in
         }
       
@@ -106,6 +106,14 @@ const CreateTableScreen = ({ updateUserTableName, updateUserTable, fbApp}) => {
 		Roboto_400Regular,
 	});
 
+    	// Show a loading indicator until the fonts are loaded
+	if (!fontsLoaded) {
+		return (
+			<View style={[styles.loginPage, styles.centered]}>
+				<ActivityIndicator size="large" color="#9c6f44" />
+			</View>
+		);
+	}
     return(
         <ScrollView>
         <KeyboardAvoidingView style={styles.container}>
@@ -344,6 +352,17 @@ const styles = StyleSheet.create({
         fontWeight: "500",
         lineHeight: 20,
         letterSpacing: 0
+    },
+    loginPage: {
+		backgroundColor: "#face8b",
+		height: "100%",
+		width: "100%",
+		flex: 1,
+		position: "relative",
+  	},
+	centered: {
+        justifyContent: "center",
+        alignItems: "center",
     },
 });
 

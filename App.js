@@ -5,7 +5,9 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { getFirestore, collection, query, where, getDocs } from "firebase/firestore";
+import { getFirestore, collection, query, where, getDocs, documentId } from "firebase/firestore";
+import { useFonts, Roboto_500Medium, Roboto_400Regular } from '@expo-google-fonts/roboto';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 import EditAccountDetails from './Screens/editAccountScreen';
 import LoginPage from './Screens/loginScreen';
@@ -50,12 +52,22 @@ export default function App() {
         setIsLoggedIn(true);
         const uid = user.uid.toString();
         // Fetch user data from Firestore to check their table
-        const Users = collection(db, 'Users');
-        const userQuery = query(Users, where("UID", "==", uid));
+        // building queries and getting the documents from user and table information
+        const usersCollection = collection(db, "Users");
+        const tablesCollection = collection(db, "Tables");
+        const userQuery = query(usersCollection, where("UID", "==", user.uid));
+
         const querySnapshot = await getDocs(userQuery);
         if (!querySnapshot.empty) {
+          
           const userDoc = querySnapshot.docs[0];
           const userData = userDoc.data();
+          // ensures the table screen has the correct table title upon logging in
+          const tableQuery = query(tablesCollection, where(documentId(), "==", userData.Table))
+          const tQuerySnapshot = await getDocs(tableQuery);
+          const tableDoc = tQuerySnapshot.docs[0];
+          const tableData = tableDoc.data();
+          setUserTableName(tableData.Table_Name);
           setUserTable(userData.Table); // Set the user table based on data
           console.log(userData.Table);
         } else {
@@ -112,17 +124,28 @@ export default function App() {
                 <Tab.Screen
                   name="Home"
                   children={(props) => <HomeScreen {...props} />}
-                  options={{ headerShown: false }}
+                  options={{ 
+                      headerShown: false,
+                      tabBarIcon: ({ color, size }) => (
+                      <Icon name="home" color={color} size={size} />
+                      ),
+                  }}
                 />
                 <Tab.Screen
                   name="Audio"
                   children={(props) => <AudioPage {...props} />}
-                  options={{ headerShown: false }}
+                  options={{ headerShown: false,
+                    tabBarIcon: ({ color, size }) => (
+                      <Icon name="music" color={color} size={size} />
+                    ), }}
                 />
                 <Tab.Screen
                   name="Friends"
                   children={(props) => <FriendsPage {...props} />}
-                  options={{ headerShown: false }}
+                  options={{ headerShown: false,
+                    tabBarIcon: ({ color, size }) => (
+                      <Icon name="users" color={color} size={size} />
+                    ), }}
                 />
                 <Tab.Screen
                   name="Table"
@@ -130,12 +153,18 @@ export default function App() {
                   options={{
                     headerTitle: userTable ? `${userTableName}` : "Table", // Set the title dynamically
                     headerShown: userTable !== "none",
+                    tabBarIcon: ({ color, size }) => (
+                      <Icon name="comments" color={color} size={size} />
+                    ),
                   }}
                 />
                 <Tab.Screen
                   name="Settings"
                   children={(props) => <SettingsPage {...props} />}
-                  options={{ headerShown: false }}
+                  options={{ headerShown: false,
+                    tabBarIcon: ({ color, size }) => (
+                      <Icon name="cogs" color={color} size={size} />
+                    ), }}
                 />
               </Tab.Navigator>
             )}
@@ -143,17 +172,23 @@ export default function App() {
           <Stack.Screen
             name="EditAccountDetails"
             children={(props) => <EditAccountDetails {...props} />}
-            options={{ title: "" }}
+            options={{ title: "",
+              headerStyle: styles.headerStyle2,
+            }}
           />
           <Stack.Screen
             name="Support"
             children={(props) => <SupportPage {...props} />}
-            options={{ title: "" }}
+            options={{ title: "",
+              headerStyle: styles.headerStyle2,
+            }}
           />
           <Stack.Screen
             name="About"
             children={(props) => <AboutScreen {...props} />}
-            options={{ title: "" }}
+            options={{ title: "",
+              headerStyle: styles.headerStyle2,
+            }}
           />
         </Stack.Navigator>
       </NavigationContainer>
@@ -168,12 +203,16 @@ const styles = StyleSheet.create({
   headerStyle: {
     backgroundColor: '#9c6f44',
   },
+  headerStyle2: {
+    backgroundColor: '#9c6f44',
+    height: 70,
+  },
   headerTintColor: {
     color: 'white',
   },
   headerTitleStyle: {
     fontSize: 24,
-    fontWeight: 'bold',
+    font: 'Roboto_500Medium',
   },
   tabBarStyle: {
     backgroundColor: '#9C6F44', // Change this to your desired background color 

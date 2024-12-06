@@ -86,7 +86,7 @@ const TableRoom = ({ updateUserTableName, updateUserTable, navigation, fbApp }) 
   const leaveTable = async () => {
     onAuthStateChanged(auth, async (user) => {
     if (!user) {
-      console.error("No user is logged in.");
+      console.log("No user is logged in.");
       return; // Return early if no user is logged in
     }
   

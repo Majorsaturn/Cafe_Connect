@@ -166,7 +166,6 @@ const styles = StyleSheet.create({
     fontSize: 36,
     top: "-24%",
     fontWeight: "700",
-    fontFamily: "JosefinSlab-Bold",
     color: "#000",
     marginBottom: 20,
   },

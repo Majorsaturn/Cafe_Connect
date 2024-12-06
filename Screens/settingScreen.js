@@ -81,7 +81,6 @@ const styles = StyleSheet.create({
   	},
   	audioTypo: {
     		textAlign: "left",
-    		fontFamily: "JosefinSlab-Bold",
     		fontWeight: "700",
     		color: "#000",
     		left: "50%",
@@ -124,7 +123,6 @@ const styles = StyleSheet.create({
     		color: "#f5f5f5",
     		left: 13,
     		top: 20,
-    		fontFamily: "Inter-Regular",
     		lineHeight: 16,
     		fontSize: 16,
     		height: 16,
@@ -143,12 +141,10 @@ const styles = StyleSheet.create({
   	},
   	errorTypo: {
     		lineHeight: 22,
-    		fontFamily: "Inter-Regular",
     		fontSize: 16,
     		textAlign: "left"
   	},
   	currentTypo: {
-    		fontFamily: "Inter-Regular",
     		lineHeight: 16,
     		fontSize: 16,
     		textAlign: "left",
@@ -170,7 +166,6 @@ const styles = StyleSheet.create({
         top: "12%",
         fontSize: 36,
         fontWeight: "700",
-        fontFamily: "JosefinSlab-Bold",
         color: "#000",
         width: 322,
         height: "6%",
@@ -315,8 +310,6 @@ const styles = StyleSheet.create({
     		display: "none"
   	},
   	currentActiveInput: {
-    		color: "#000",
-    		fontFamily: "Inter-Regular",
     		lineHeight: 16,
     		fontSize: 16
   	},
@@ -348,7 +341,6 @@ const styles = StyleSheet.create({
     		width: 240,
     		zIndex: 5,
     		lineHeight: 22,
-    		fontFamily: "Inter-Regular",
     		fontSize: 16,
     		textAlign: "left"
   	},
@@ -376,7 +368,6 @@ const styles = StyleSheet.create({
     		letterSpacing: 0,
     		lineHeight: 20,
     		fontWeight: "500",
-    		fontFamily: "Roboto-Medium",
     		textAlign: "center",
     		zIndex: 1,
   	},

@@ -1,15 +1,16 @@
-import * as React from "react";
+import React, { useState, useEffect } from 'react';
 import {StyleSheet, View, Image, Pressable, Text} from "react-native";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useFonts, Roboto_500Medium, Roboto_400Regular } from '@expo-google-fonts/roboto';
 
 const HomePage = ({fbApp}) => {
     const auth = getAuth(fbApp);
-
+    const [userName, setUserName] = useState(null);
     onAuthStateChanged(auth, (user) => {
         if (user) {
             // User is signed in, see docs for a list of available properties
             const uid = user.uid;
+            setUserName(user.displayName);
             console.log(uid);
         } else {
             // User is signed out
@@ -23,20 +24,29 @@ const HomePage = ({fbApp}) => {
                     <Pressable style={styles.wrapper} onPress={()=>{}}>
                         <Image style={styles.icon} resizeMode="cover" source={require("../assets/Ellipse 1.png")} />
                     </Pressable>
-                    <Text style={styles.username}>Username</Text>
+                    <Text style={styles.username}>{userName}</Text>
                     <Text style={[styles.cafConnect, styles.labelText1Position]}>CAFÉ CONNECT</Text>
                 </View>
             </View>
             <View style={styles.homePageItem} >
-            <Text></Text>
+            <Image style={styles.image1Icon} resizeMode="cover" source={require("../assets/image_1.png")} />
             </View>
             <View style={styles.homePageChild} >
-            <Text></Text>
+            <Image style={[styles.image2Icon]} resizeMode="cover" source={require("../assets/image_2.png")} />
             </View>
         </View>);
 };
 
 const styles = StyleSheet.create({
+    image2Icon: {
+		marginLeft: -463,
+		top: 0,
+		width: "100%",
+		height: "100%",
+		opacity: 1,
+		left: "100%",
+		position: "absolute"
+	},
     iconPosition: {
         left: 0,
         position: "relative"
@@ -125,7 +135,7 @@ const styles = StyleSheet.create({
         fontSize: 14,
         color: "#fff",
         textAlign: "center",
-        fontFamily: "Roboto-Medium",
+        fontFamily: "Roboto_500Medium",
         fontWeight: "500",
         lineHeight: 20,
         letterSpacing: 0
@@ -151,7 +161,6 @@ const styles = StyleSheet.create({
         alignItems: "center",
         display: "flex",
         textAlign: "center",
-        fontFamily: "Roboto-Medium",
         fontWeight: "500",
         lineHeight: 20,
         letterSpacing: 0,
@@ -209,8 +218,8 @@ const styles = StyleSheet.create({
     },
     username: {
         left: "40%",
-        width: 89,
-        textShadowColor: "rgba(0, 0, 0, 0.25)",
+        width: "110%",
+        textShadowColor: "rgba(0, 0, 0, 0.15)",
         textShadowOffset: {
             width: 0,
             height: 4
@@ -222,7 +231,7 @@ const styles = StyleSheet.create({
         display: "flex",
         textAlign: "center",
         color: "#000",
-        fontFamily: "Roboto-Medium",
+        fontFamily: "Roboto_500Medium",
         fontWeight: "500",
         lineHeight: 20,
         letterSpacing: 0,
@@ -260,7 +269,6 @@ const styles = StyleSheet.create({
         alignItems: "center",
         display: "flex",
         textAlign: "center",
-        fontFamily: "Roboto-Medium",
         fontWeight: "500",
         lineHeight: 20,
         letterSpacing: 0,
@@ -326,7 +334,6 @@ const styles = StyleSheet.create({
         alignItems: "center",
         display: "flex",
         textAlign: "center",
-        fontFamily: "Roboto-Medium",
         fontWeight: "500",
         lineHeight: 20,
         letterSpacing: 0,
@@ -363,7 +370,6 @@ const styles = StyleSheet.create({
         alignItems: "center",
         display: "flex",
         textAlign: "center",
-        fontFamily: "Roboto-Medium",
         fontWeight: "500",
         lineHeight: 20,
         letterSpacing: 0,
@@ -519,7 +525,6 @@ const styles = StyleSheet.create({
     cafConnect: {
         top: "-100%",
         fontWeight: "700",
-        fontFamily: "JosefinSlab-Bold",
         width: 160,
         height: 60,
         fontSize: 24,
@@ -539,7 +544,23 @@ const styles = StyleSheet.create({
         overflow: "hidden",
         flex: 1,
         width: "100%"
-    }
+    },
+    image1Icon: {
+        width: "60%",
+        left: "13%",
+        position: "relative"
+    },
+    loginPage: {
+		backgroundColor: "#face8b",
+		height: "100%",
+		width: "100%",
+		flex: 1,
+		position: "relative",
+  	},
+	centered: {
+        justifyContent: "center",
+        alignItems: "center",
+    },
 });
 
 export default HomePage;

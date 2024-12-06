@@ -67,7 +67,6 @@ const styles = StyleSheet.create({
     descriptionTypo: {
         lineHeight: 20,
         fontSize: 14,
-        fontFamily: "Inter-Regular",
         alignSelf: "stretch"
     },
     aClr: {
@@ -122,7 +121,6 @@ const styles = StyleSheet.create({
         top: "5%",
         fontSize: 36,
         fontWeight: "700",
-        fontFamily: "JosefinSlab-Bold",
         color: "#000",
         width: 322,
         height: "6%",
@@ -132,7 +130,6 @@ const styles = StyleSheet.create({
     },
     heading: {
         color: "#f3f3f3",
-        fontFamily: "Inter-Regular",
         textAlign: "left"
     },
     heading1: {
@@ -170,7 +167,6 @@ const styles = StyleSheet.create({
         lineHeight: 22,
         color: "#fff",
         fontSize: 16,
-        fontFamily: "Inter-Regular",
         flex: 1
     },
     row: {
@@ -178,7 +174,6 @@ const styles = StyleSheet.create({
         alignSelf: "stretch"
     },
     description: {
-        fontFamily: "Inter-Regular",
         lineHeight: 20,
         fontSize: 14,
         alignSelf: "stretch"
@@ -200,7 +195,6 @@ const styles = StyleSheet.create({
         lineHeight: 16,
         fontSize: 16,
         color: "#fff",
-        fontFamily: "Inter-Regular"
     },
     menuShortcut: {
         justifyContent: "flex-end",
@@ -208,7 +202,6 @@ const styles = StyleSheet.create({
     },
     description4: {
         color: "#757575",
-        fontFamily: "Inter-Regular",
         textAlign: "left"
     },
     menuItem5: {
@@ -374,6 +367,17 @@ const styles = StyleSheet.create({
         borderRadius: 20, // Makes the border rounded
         alignItems: "center",
         justifyContent: "center",
+    },
+    loginPage: {
+		backgroundColor: "#face8b",
+		height: "100%",
+		width: "100%",
+		flex: 1,
+		position: "relative",
+  	},
+	centered: {
+        justifyContent: "center",
+        alignItems: "center",
     },
 });
 

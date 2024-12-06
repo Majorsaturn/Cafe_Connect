@@ -1,5 +1,5 @@
 import * as React from "react";
-import {Image, StyleSheet, Text, View, TextInput, TouchableOpacity, ScrollView, KeyboardAvoidingView} from "react-native";
+import { Image, StyleSheet, Text, View, TextInput, TouchableOpacity, ScrollView, KeyboardAvoidingView, ActivityIndicator } from "react-native";
 import InsetShadow from 'react-native-inset-shadow';
 import { getAuth, updateProfile } from "firebase/auth";
 import { getFirestore, updateDoc, doc, collection, query, where, getDocs } from "firebase/firestore";
@@ -68,6 +68,16 @@ const editAccountPage = ({navigation, fbApp}) => {
               console.error("Error updating document:", error.message);
             }
           };
+
+		  	// Show a loading indicator until the fonts are loaded
+	if (!fontsLoaded) {
+		return (
+			<View style={[styles.loginPage, styles.centered]}>
+				<ActivityIndicator size="large" color="#9c6f44" />
+			</View>
+		);
+	}
+
   	return (
 		<ScrollView>
     		<KeyboardAvoidingView style={styles.signUpPage}>
@@ -276,7 +286,7 @@ const styles = StyleSheet.create({
   	signUpPage: {
     		backgroundColor: "#face8b",
     		width: "100%",
-    		height: 645,
+    		height: 670,
     		overflow: "hidden",
     		flex: 1
   	},
@@ -300,7 +310,18 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 		alignItems: "center",
 		flex: 1
-	}
+	},
+	loginPage: {
+		backgroundColor: "#face8b",
+		height: "100%",
+		width: "100%",
+		flex: 1,
+		position: "relative",
+  	},
+	centered: {
+        justifyContent: "center",
+        alignItems: "center",
+    },
 });
 
 export default editAccountPage;

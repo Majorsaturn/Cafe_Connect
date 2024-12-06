@@ -1,5 +1,5 @@
 import * as React from "react";
-import {Image, StyleSheet, Text, View, TextInput, TouchableOpacity, ScrollView, KeyboardAvoidingView} from "react-native";
+import {Image, StyleSheet, Text, View, TextInput, TouchableOpacity, ScrollView, KeyboardAvoidingView, ActivityIndicator} from "react-native";
 import InsetShadow from 'react-native-inset-shadow';
 import { getAuth, createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { getFirestore, addDoc, collection } from "firebase/firestore";
@@ -32,6 +32,15 @@ const SignUpPage = ({navigation, fbApp}) => {
 	const handleLoginPress = async () => {
 		navigation.navigate('Login');
 	};
+
+		// Show a loading indicator until the fonts are loaded
+		if (!fontsLoaded) {
+			return (
+				<View style={[styles.loginPage, styles.centered]}>
+					<ActivityIndicator size="large" color="#9c6f44" />
+				</View>
+			);
+		}
 
 	const handleCreateAccountPress = async () => {
 		try {
@@ -380,7 +389,18 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 		alignItems: "center",
 		flex: 1
-	}
+	},
+	loginPage: {
+		backgroundColor: "#face8b",
+		height: "100%",
+		width: "100%",
+		flex: 1,
+		position: "relative",
+  	},
+	centered: {
+        justifyContent: "center",
+        alignItems: "center",
+    },
 });
 
 export default SignUpPage;

@@ -1,5 +1,5 @@
 import * as React from "react";
-import {Image, StyleSheet, Text, ScrollView, KeyboardAvoidingView} from "react-native";
+import {Image, StyleSheet, Text, ScrollView, KeyboardAvoidingView, ActivityIndicator, View} from "react-native";
 import { useFonts, Roboto_500Medium, Roboto_400Regular } from '@expo-google-fonts/roboto';
 
 const AboutPage = ({navigation}) => {
@@ -8,6 +8,14 @@ const AboutPage = ({navigation}) => {
 		Roboto_400Regular,
 	});
 
+		// Show a loading indicator until the fonts are loaded
+		if (!fontsLoaded) {
+			return (
+				<View style={[styles.loginPage, styles.centered]}>
+					<ActivityIndicator size="large" color="#9c6f44" />
+				</View>
+			);
+		}
   	return (
 		<ScrollView>
     		<KeyboardAvoidingView style={styles.signUpPage}>
@@ -159,7 +167,18 @@ const styles = StyleSheet.create({
         padding: 10,
 		fontWeight: "300",
 		fontFamily: "Roboto_500Medium",
-    }
+    },
+	loginPage: {
+		backgroundColor: "#face8b",
+		height: "100%",
+		width: "100%",
+		flex: 1,
+		position: "relative",
+  	},
+	centered: {
+        justifyContent: "center",
+        alignItems: "center",
+    },
 });
 
 export default AboutPage;
