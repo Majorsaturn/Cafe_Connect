@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from "react";
-import { Image, StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import React, { useState, useEffect, useRef } from "react";
+import { Image, StyleSheet, Text, View, TouchableOpacity, Animated } from "react-native";
 import { Audio } from "expo-av";
 
 const AudioScreen = ({ fbApp }) => {
   const [sound, setSound] = useState(null); // Holds the current sound object
   const [isPlaying, setIsPlaying] = useState(false); // Controls play/pause state
   const [currentTrack, setCurrentTrack] = useState(0); // Tracks the current audio index
+  const [amplitude, setAmplitude] = useState(0); // Holds the audio amplitude for visualization
 
   const audioFiles = [
     require("../assets/lofi-study-calm-peaceful-chill-hop-112191.mp3"),
@@ -19,6 +20,8 @@ const AudioScreen = ({ fbApp }) => {
     // Add corresponding track names here
   ];
 
+  const visualizerAnimation = useRef(new Animated.Value(0)).current;
+
   useEffect(() => {
     return sound
       ? () => {
@@ -26,6 +29,29 @@ const AudioScreen = ({ fbApp }) => {
         }
       : undefined;
   }, [sound]);
+
+  const updateAmplitude = async () => {
+    if (sound) {
+      const status = await sound.getStatusAsync();
+      if (status.isPlaying) {
+        const randomAmplitude = Math.random(); // Simulate amplitude values (for real-time data, you need a library like react-native-audio)
+        setAmplitude(randomAmplitude);
+      }
+    }
+  };
+
+  useEffect(() => {
+    const interval = setInterval(updateAmplitude, 100);
+    return () => clearInterval(interval);
+  }, [sound]);
+
+  useEffect(() => {
+    Animated.timing(visualizerAnimation, {
+      toValue: amplitude,
+      duration: 100,
+      useNativeDriver: true,
+    }).start();
+  }, [amplitude]);
 
   const playPauseAudio = async () => {
     if (sound === null) {
@@ -70,29 +96,47 @@ const AudioScreen = ({ fbApp }) => {
       <Image style={styles.image5Icon} resizeMode="cover" source={require("../assets/image 5.png")} />
       <Image style={styles.profileIcon} resizeMode="cover" source={require("../assets/profile icon.png")} />
       <Text style={styles.ambientSounds}>AMBIENT SOUNDS</Text>
-      <View style={styles.media}> 
-      {/* Display current track name */}
-      <Text style={styles.trackName}>{trackNames[currentTrack]}</Text>
 
-      <View style={styles.mediaPlayer}>
-        <TouchableOpacity onPress={skipToPrevious}>
-          <Image style={styles.solarskipPreviousOutlineIcon} source={require("../assets/solar-skip-previous-outline.png")} />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={playPauseAudio}>
-          <Image
-            style={styles.solarplayOutlineIcon}
-            source={
-              isPlaying
-                ? require("../assets/solar-pause-outline.png") // Use a pause icon when playing
-                : require("../assets/solar-play-outline.png") // Use a play icon when paused
-            }
-          />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={skipToNext}>
-          <Image style={styles.solarskipNextOutlineIcon} source={require("../assets/solar-skip-next-outline.png")} />
-        </TouchableOpacity>
+
+
+      <View style={styles.media}>
+        {/* Display current track name */}
+        <Text style={styles.trackName}>{trackNames[currentTrack]}</Text>
+        <View style={styles.mediaPlayer}>
+          <TouchableOpacity onPress={skipToPrevious}>
+            <Image
+              style={styles.solarskipPreviousOutlineIcon}
+              source={require("../assets/solar-skip-previous-outline.png")}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={playPauseAudio}>
+            <Image
+              style={styles.solarplayOutlineIcon}
+              source={
+                isPlaying
+                  ? require("../assets/solar-pause-outline.png") // Use a pause icon when playing
+                  : require("../assets/solar-play-outline.png") // Use a play icon when paused
+              }
+            />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={skipToNext}>
+            <Image
+              style={styles.solarskipNextOutlineIcon}
+              source={require("../assets/solar-skip-next-outline.png")}
+            />
+          </TouchableOpacity>
+        </View>
+        
       </View>
-      </View> 
+      {/* Audio Visualizer */}
+      <View style={styles.visualizerContainer}>
+        <Animated.View
+          style={[
+            styles.visualizerBar,
+            { transform: [{ scaleY: visualizerAnimation }] },
+          ]}
+        />
+      </View>
     </View>
   );
 };
@@ -169,7 +213,25 @@ const styles = StyleSheet.create({
     borderStyle: "solid",
     borderColor: "#d9d9d9",
     borderWidth: 1,
-  }
+  },
+  visualizerContainer: {
+    height: 100,
+    width: "40%",
+    backgroundColor: "#9c6f44",
+    borderRadius: 10,
+    top: "60%",
+    justifyContent: "center",
+    alignItems: "center",
+    position: "absolute",
+    borderStyle: "solid",
+    borderColor: "#d9d9d9",
+    borderWidth: 1,
+  },
+  visualizerBar: {
+    width: "100%",
+    height: 10,
+    backgroundColor: "#face8b",
+  },
 });
 
 export default AudioScreen;

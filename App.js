@@ -34,11 +34,15 @@ const Stack = createStackNavigator();
 const fbApp = initializeApp(firebaseConfig);
 
 export default function App() {
+  // states
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userTable, setUserTable] = useState(null); // New state for user's table
+  const [userTableName, setUserTableName] = useState(null);
 
+  // authentication and database 
   const auth = getAuth(fbApp);
   const db = getFirestore(fbApp);
+
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -99,6 +103,11 @@ export default function App() {
                 headerStyle: styles.headerStyle,
                 headerTintColor: styles.headerTintColor.color,
                 headerTitleStyle: styles.headerTitleStyle,
+                tabBarStyle: styles.tabBarStyle, // Custom tab bar styles
+                tabBarLabelStyle: styles.tabBarLabelStyle, // Customize tab labels
+                tabBarActiveTintColor: '#4B2909', // Active tab color
+                tabBarInactiveTintColor: '#fff', // Inactive tab color
+                tabBarIconStyle: styles.tabBarIconStyle, // Optional: Customize icons
               }}>
                 <Tab.Screen
                   name="Home"
@@ -117,8 +126,9 @@ export default function App() {
                 />
                 <Tab.Screen
                   name="Table"
-                  children={userTable === "none" ? (props) => <CreateTableScreen {...props} /> : (props) => <TableRoom {...props} />}
+                  children={userTable === "none" ? (props) => <CreateTableScreen {...props} updateUserTable={setUserTable} updateUserTableName={setUserTableName}/> : (props) => <TableRoom {...props} updateUserTable={setUserTable} updateUserTableName={setUserTableName}/>}
                   options={{
+                    headerTitle: userTable ? `${userTableName}` : "Table", // Set the title dynamically
                     headerShown: userTable !== "none",
                   }}
                 />
@@ -164,5 +174,15 @@ const styles = StyleSheet.create({
   headerTitleStyle: {
     fontSize: 24,
     fontWeight: 'bold',
+  },
+  tabBarStyle: {
+    backgroundColor: '#9C6F44', // Change this to your desired background color 
+  },
+  tabBarLabelStyle: {
+    fontSize: 12, // Text size of labels
+    fontWeight: 'bold', // Make labels bold
+  },
+  tabBarIconStyle: {
+    marginTop: 1, // Adjust icon positioning
   },
 });

@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react'; // Add useRef for managing FlatList reference
 import { View, Text, TextInput, FlatList, StyleSheet, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, TouchableOpacity, ActivityIndicator } from 'react-native';
-import { getFirestore, addDoc, collection, doc, where, getDocs, onSnapshot, query, orderBy, Timestamp } from "firebase/firestore";
+import { getFirestore, addDoc, collection, doc, where, getDocs, onSnapshot, query, orderBy, Timestamp, updateDoc } from "firebase/firestore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { format } from 'date-fns';
+import InsetShadow from 'react-native-inset-shadow';
 
-const TableRoom = ({ fbApp }) => {
+const TableRoom = ({ updateUserTableName, updateUserTable, navigation, fbApp }) => {
+  
   const auth = getAuth(fbApp);
   const db = getFirestore(fbApp);
 
@@ -20,7 +22,6 @@ const TableRoom = ({ fbApp }) => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
         setCurrentUser(user);
-
         try {
           const usersRef = collection(db, 'Users');
           const querySnapshot = await getDocs(query(usersRef, where("UID", "==", user.uid)));
@@ -82,6 +83,44 @@ const TableRoom = ({ fbApp }) => {
     }
   };
 
+  const leaveTable = async () => {
+    onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+      console.error("No user is logged in.");
+      return; // Return early if no user is logged in
+    }
+  
+    try {
+      const usersCollection = collection(db, "Users");
+      const userQuery = query(usersCollection, where("UID", "==", user.uid));
+      const querySnapshot = await getDocs(userQuery);
+  
+      if (querySnapshot.empty) {
+        console.error("No document found for the authenticated user.");
+        return;
+      }
+  
+      const userDoc = querySnapshot.docs[0];
+      const userDocRef = doc(db, "Users", userDoc.id);
+  
+      // Use updateDoc to update the Table field
+      await updateDoc(userDocRef, { Table: "none" });
+      console.log("User left table successfully.");
+  
+      // Refetch user table
+      const updatedSnapshot = await getDocs(userQuery);
+      if (!updatedSnapshot.empty) {
+        const updatedUserDoc = updatedSnapshot.docs[0];
+        const updatedUserData = updatedUserDoc.data();
+        updateUserTableName("none")
+        updateUserTable(updatedUserData.Table);
+      }
+    } catch (error) {
+      console.error("Error updating user table:", error);
+    }
+    });
+  };
+
   const renderItem = ({ item }) => (
     <View style={styles.messageContainer}>
       <View style={styles.headerRow}>
@@ -93,7 +132,21 @@ const TableRoom = ({ fbApp }) => {
       <Text style={styles.message}>{item.text}</Text>
     </View>
   );
-
+    // Set the header button
+    useEffect(() => {
+      navigation.setOptions({
+        headerRight: () => (
+            <TouchableOpacity style={styles.friendItem} onPress={leaveTable}>
+              <InsetShadow>
+              <View style={styles.statelayer}>
+              <Text style={styles.friendText}>Leave Table</Text>
+              </View>
+              </InsetShadow>
+            </TouchableOpacity>
+        ),
+      });
+    }, [navigation]);
+  
   return (
     <KeyboardAvoidingView style={styles.container}>
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -181,6 +234,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: 10,
+    right: 5,
     marginBottom: 10,
   },
   input: {
@@ -202,6 +256,23 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: 'bold',
   },
+  friendItem: {
+    backgroundColor: "#face8b", // Light background color for the border
+    marginVertical: 13,
+    borderRadius: 20, // Makes the border rounded
+    overflow: "hidden",
+    right: 10,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  friendText: { 
+    fontSize: 18, 
+    paddingVertical: 5, 
+    color: "black" 
+  },
+  statelayer: {
+    paddingHorizontal: 10
+  }
 });
 
 export default TableRoom;

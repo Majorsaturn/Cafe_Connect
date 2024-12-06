@@ -9,6 +9,7 @@ const editAccountPage = ({navigation, fbApp}) => {
 	const auth = getAuth(fbApp);
 	const db = getFirestore(fbApp);
 
+	//states
 	const [First_Name, onChangeFName] = React.useState('');
 	const [Last_Name, onChangeLName] = React.useState('');
 	const [Username, onChangeUsername] = React.useState('');

@@ -1,16 +1,17 @@
 import * as React from "react";
-import { View, Text, TextInput, FlatList, Button, Image, StyleSheet, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Platform, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, ScrollView, Image, StyleSheet, KeyboardAvoidingView, TouchableOpacity } from 'react-native';
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { getFirestore, addDoc, updateDoc, collection, doc, where, getDocs, onSnapshot, query, orderBy, Timestamp } from "firebase/firestore";
+import { getFirestore, addDoc, updateDoc, collection, doc, where, getDocs, query } from "firebase/firestore";
 import { useFonts, Roboto_500Medium, Roboto_400Regular } from '@expo-google-fonts/roboto';
 import InsetShadow from 'react-native-inset-shadow';
 
-const CreateTableScreen = ({fbApp}) => {
+const CreateTableScreen = ({ updateUserTableName, updateUserTable, fbApp}) => {
     const auth = getAuth(fbApp);
     const db = getFirestore(fbApp);
 
     const [currentUser, setCurrentUser] = React.useState(null);
     const [Table_Name, onChangeTName] = React.useState('');
+    const [Table_Join, onChangeTJName] = React.useState('');
 	const [maxmembers, onChangeMaxMembers] = React.useState('');
 	// const [privateState, onChangePrivacy] = React.useState('');
 
@@ -46,6 +47,8 @@ const CreateTableScreen = ({fbApp}) => {
                 await updateDoc(userDocRef, {
                     Table: docRef.id, // Assuming docRef.id is the value you want to set
                 });
+                updateUserTableName(Table_Name);
+                updateUserTable(docRef.id);
                 console.log('Document updated successfully');
             } else {
                 console.log("No matching user found");
@@ -55,12 +58,56 @@ const CreateTableScreen = ({fbApp}) => {
 		}
     }
 
+    const joinTable = async () => {
+        onAuthStateChanged(auth, async (user) => {
+        if (!user) {
+          console.error("No user is logged in.");
+          return; // Return early if no user is logged in
+        }
+      
+        try {
+            // building queries and getting the documents from user and table information
+          const usersCollection = collection(db, "Users");
+          const tablesCollection = collection(db, "Tables");
+          const userQuery = query(usersCollection, where("UID", "==", user.uid));
+          const tableQuery = query(tablesCollection, where("Table_Name", "==", Table_Join))
+          const tQuerySnapshot = await getDocs(tableQuery);
+          const querySnapshot = await getDocs(userQuery);
+            
+          if (querySnapshot.empty) {
+            console.error("No document found for the authenticated user.");
+            return;
+          }
+          const tableDoc = tQuerySnapshot.docs[0];
+          const userDoc = querySnapshot.docs[0];
+          const userDocRef = doc(db, "Users", userDoc.id);
+      
+          // Use updateDoc to update the Table field
+          await updateDoc(userDocRef, { Table: tableDoc.id });
+          console.log("User joined table successfully.");
+      
+          // Refetch user table
+          const updatedSnapshot = await getDocs(userQuery);
+          if (!updatedSnapshot.empty) {
+            const updatedUserDoc = updatedSnapshot.docs[0];
+            const updatedUserData = updatedUserDoc.data();
+            // ensure table name is updated so it is shown in the table screen
+            updateUserTableName(Table_Join);
+            updateUserTable(updatedUserData.Table);
+          }
+        } catch (error) {
+          console.error("Error updating user table:", error);
+        }
+        });
+      };
+
     let [fontsLoaded] = useFonts({
 		Roboto_500Medium,
 		Roboto_400Regular,
 	});
 
     return(
+        <ScrollView>
         <KeyboardAvoidingView style={styles.container}>
             <Image style={[styles.image2Icon]} resizeMode="cover" source={require("../assets/image_2.png")} />
             <Text style={[styles.cafConnect]}>CREATE A TABLE</Text>
@@ -105,7 +152,33 @@ const CreateTableScreen = ({fbApp}) => {
         				</View>
 					</InsetShadow>
 				</TouchableOpacity>
+                <Text style={[styles.cafConnect2]}>JOIN A TABLE</Text>
+                <View style={[styles.topEnforcer3, styles.textShadowBox]}>
+        			<View style={[styles.textField1, styles.statePosition]}>
+          				<View style={[styles.stateLayer1, styles.statePosition]}>
+            				<View style={[styles.content, styles.contentSpaceBlock]}>
+              						<View style={styles.inputTextContainer}>
+										<TextInput
+											style={styles.input}
+											onChangeText={onChangeTJName}
+											value={Table_Join}
+											placeholder="Table Name"
+										/>
+              						</View>
+            				</View>
+          				</View>
+        			</View>
+        		<View style={styles.activeIndicator} />
+      		</View>
+              <TouchableOpacity  style={[styles.button2, styles.buttonLayout]} onPress={joinTable}>
+				  	<InsetShadow>
+        				<View style={[styles.stateLayer6, styles.contentFlexBox]}>
+          					<Text style={[styles.labelText, styles.labelTextTypo]}>JOIN TABLE</Text>
+        				</View>
+					</InsetShadow>
+				</TouchableOpacity>
         </KeyboardAvoidingView>
+        </ScrollView>
     );
 };
 
@@ -113,7 +186,7 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: "#face8b",
         width: "100%",
-    	height: 932,
+    	height: 750,
     	overflow: "hidden",
     	flex: 1
      },
@@ -150,11 +223,26 @@ const styles = StyleSheet.create({
 		left: "10%",
 		position: "relative"
 	},
+    cafConnect2: {
+		top: "13%",
+		fontSize: 36,
+		fontWeight: "300",
+		fontFamily: "Roboto_500Medium",
+		color: "#000",
+		width: "100%",
+		height: "10%",
+		textAlign: "left",
+		left: "18%",
+		position: "relative"
+	},
     topEnforcer: {
-        top: "10%"
+        top: "5%"
     },
     topEnforcer2: {
-        top: "15%"
+        top: "7%"
+    },
+    topEnforcer3: {
+        top: "13%"
     },
     textShadowBox: {
         height: 56,
@@ -207,7 +295,11 @@ const styles = StyleSheet.create({
     },
     button1: {
         marginLeft: -105,
-        top: "20%",
+        top: "10%",
+    },
+    button2: {
+        marginLeft: -105,
+        top: "17%",
     },
     buttonLayout: {
         height: 52,
@@ -222,6 +314,15 @@ const styles = StyleSheet.create({
     },
     stateLayer5: {
         paddingHorizontal: "27%",
+        paddingVertical: 0,
+        alignSelf: "stretch",
+        backgroundColor: "#9c6f44",
+        justifyContent: "center",
+        alignItems: "center",
+        flexDirection: "row"
+    },
+    stateLayer6: {
+        paddingHorizontal: "31.8%",
         paddingVertical: 0,
         alignSelf: "stretch",
         backgroundColor: "#9c6f44",
