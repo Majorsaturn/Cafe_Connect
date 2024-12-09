@@ -10,6 +10,7 @@ const TableRoom = ({ updateUserTableName, updateUserTable, navigation, fbApp }) 
   const auth = getAuth(fbApp);
   const db = getFirestore(fbApp);
 
+  // states
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const [loading, setLoading] = useState(true);
@@ -18,6 +19,7 @@ const TableRoom = ({ updateUserTableName, updateUserTable, navigation, fbApp }) 
 
   const flatListRef = useRef(null); // Ref for FlatList
 
+  // get the user and their table
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
@@ -46,6 +48,8 @@ const TableRoom = ({ updateUserTableName, updateUserTable, navigation, fbApp }) 
     return () => unsubscribe();
   }, [auth, db]);
 
+
+  // update messages with new messages
   useEffect(() => {
     if (!userTable) return;
 
@@ -66,6 +70,8 @@ const TableRoom = ({ updateUserTableName, updateUserTable, navigation, fbApp }) 
     return () => unsubscribe();
   }, [db, userTable]);
 
+
+  
   const sendMessage = async () => {
     if (newMessage.trim() && userTable) {
       try {

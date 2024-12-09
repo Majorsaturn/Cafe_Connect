@@ -28,6 +28,7 @@ const CreateTableScreen = ({ updateUserTableName, updateUserTable, fbApp}) => {
         try{
             const user = currentUser;
             console.log("User UID:", user.uid)
+            //document for the new table
             const docRef = await addDoc(collection(db, "Tables"), {
 				Table_Name: Table_Name,
                 maxmembers: maxmembers,

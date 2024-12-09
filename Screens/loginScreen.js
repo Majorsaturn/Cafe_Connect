@@ -29,6 +29,7 @@ const LoginPage = ({navigation, fbApp}) => {
 				console.log(errorMessage);
 			});
 	  };
+	// navigation to sign up
 	const handleSignUpPress = async () => {
 		navigation.navigate('SignUp');
 	}

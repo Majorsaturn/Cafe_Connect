@@ -1,8 +1,8 @@
 import * as React from "react";
 import {Image, StyleSheet, Text, View, TextInput, TouchableOpacity, ScrollView, KeyboardAvoidingView, ActivityIndicator} from "react-native";
 import InsetShadow from 'react-native-inset-shadow';
-import { getAuth, updateProfile } from "firebase/auth";
-import { getFirestore, addDoc, doc, collection, query, where, getDocs } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
+import { getFirestore, addDoc, collection } from "firebase/firestore";
 import { useFonts, Roboto_500Medium, Roboto_400Regular } from '@expo-google-fonts/roboto';
 
 const SupportPage = ({navigation, fbApp}) => {
@@ -16,7 +16,9 @@ const SupportPage = ({navigation, fbApp}) => {
 		Roboto_500Medium,
 		Roboto_400Regular,
 	});
+	
 
+	//submit a support ticket
 	const handleSupportPress = async () => {
         const user = auth.currentUser; // Get the currently authenticated user
 

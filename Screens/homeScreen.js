@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {StyleSheet, View, Image, Pressable, Text} from "react-native";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { useFonts, Roboto_500Medium, Roboto_400Regular } from '@expo-google-fonts/roboto';
 
 const HomePage = ({fbApp}) => {
     const auth = getAuth(fbApp);
