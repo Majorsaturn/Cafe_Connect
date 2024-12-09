@@ -4,7 +4,7 @@ import InsetShadow from 'react-native-inset-shadow';
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { useFonts, Roboto_500Medium, Roboto_400Regular } from '@expo-google-fonts/roboto';
 
-const LoginPage = ({navigation, onLogin, fbApp}) => {
+const LoginPage = ({navigation, fbApp}) => {
 	let [fontsLoaded] = useFonts({
 		Roboto_500Medium,
 		Roboto_400Regular,
@@ -22,7 +22,6 @@ const LoginPage = ({navigation, onLogin, fbApp}) => {
 				// Signed in
 				const user = userCredential.user;
 				console.log("User UID:", user.uid);
-				onLogin(); // Call the onLogin callback passed from App
 			})
 			.catch((error) => {
 				const errorCode = error.code;

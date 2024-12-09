@@ -13,15 +13,16 @@ const SettingsPage = ({ navigation, fbApp }) => {
 		console.error("Error logging out:", error.message);
 	  }
 	};
-
+	
+	//navigates to edit account
 	const handleEditPress = async () => {
 		navigation.navigate('EditAccountDetails');
 	}
-
+	//navigates to about
 	const handleAboutPress = async () => {
 		navigation.navigate('About');
 	}
-
+	//navigates to support
 	const handleSupportPress = async () => {
 		navigation.navigate('Support');
 	}
