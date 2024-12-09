@@ -49,7 +49,7 @@ const TableRoom = ({ updateUserTableName, updateUserTable, navigation, fbApp }) 
   }, [auth, db]);
 
 
-  // update messages with new messages
+  // update messages area with new messages
   useEffect(() => {
     if (!userTable) return;
 
@@ -71,7 +71,7 @@ const TableRoom = ({ updateUserTableName, updateUserTable, navigation, fbApp }) 
   }, [db, userTable]);
 
 
-  
+
   const sendMessage = async () => {
     if (newMessage.trim() && userTable) {
       try {
